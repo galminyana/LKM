@@ -1,11 +1,6 @@
 ## Kernel LKM
 ---
-A la Debian
-
-### Files
----
-- 
-- 
+_A la Debian_ way
 
 ### Config
 ---
