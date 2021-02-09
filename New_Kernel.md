@@ -16,6 +16,7 @@ For the current kernel config, check files at `/boot/config-VERSION`. It stores 
 ---
 ```bash
 LKM# make                              <== Standard Build
+LKM# make -j`nproc` bindeb-pkg         <== Build using all cpu
 LKM# make deb-pkg                      <== Build into a .deb
 LKM# make deb-pkg LOCALVERSION=-TEXT   <== The same but appends TEXT
 LKM# make clean                        <== Cleans Build
@@ -31,7 +32,7 @@ make[4]: *** Waiting for unfinished jobs....
 ```
 ### Results
 ---
-In upper folder creates:
+In upper folder creates seome files
 
 
 
