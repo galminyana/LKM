@@ -4,7 +4,7 @@ A la Debian
 
 ### Files
 ---
-- `/boot/config-VERSION`: Stores the config for the actual kernel
+- 
 - 
 
 ### Config
@@ -14,6 +14,8 @@ LKM# make olddefconfig            <== Dumps Kernel config to .config file
 LKM# make nconfig                 <== ncurses setup
 LKM# make config                  <== Old setup
 ```
+For the current kernel config, check files at `/boot/config-VERSION`. It stores installed kernels configs. 
+
 
 ### Build 
 ---
@@ -23,7 +25,7 @@ LKM# make deb-pkg                      <== Build into a .deb
 LKM# make deb-pkg LOCALVERSION=-TEXT   <== The same but appends TEXT
 LKM# make clean                        <== Cleans Build
 ```
-If using a existing `.config` file, edit the file and do:
+If using an existing `.config` file, edit the file and do:
 ```markup
 CONFIG_SYSTEM_TRUSTED_KEYS = ""
 ```
