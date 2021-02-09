@@ -44,3 +44,8 @@ In upper folder creates:
 ---
 
 
+### References
+---
+- Build a Debian Kernel Package: [https://wiki.debian.org/BuildADebianKernelPackage](https://wiki.debian.org/BuildADebianKernelPackage)
+- Common Kernel Related Tasks: [https://kernel-team.pages.debian.net/kernel-handbook/ch-common-tasks.html](https://kernel-team.pages.debian.net/kernel-handbook/ch-common-tasks.html)
+
