@@ -19,6 +19,6 @@ LKM# make config                  <== Old setup
 ---
 ```bash
 LKM# make deb-pkg                      <== Build into a .deb
-KMM# make deb-pkg LOCALVERSION=-TEXT   <== The same but appends TEXT
+LKM# make deb-pkg LOCALVERSION=-TEXT   <== The same but appends TEXT
 LKM# make clean                        <== Cleans Build
 ```
