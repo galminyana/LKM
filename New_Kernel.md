@@ -6,6 +6,7 @@ _A la Debian_ way
 ---
 ```bash
 LKM# make olddefconfig            <== Dumps Kernel config to .config file
+LKM# make menuconfig              <== My fav
 LKM# make nconfig                 <== ncurses setup
 LKM# make config                  <== Old setup
 ```
@@ -32,13 +33,16 @@ make[4]: *** Waiting for unfinished jobs....
 ```
 ### Results
 ---
-In upper folder creates seome files
-
+In upper folder creates:
+- `linux-image-4.19.174.deb`: Image to install
+- `linux-image-4.19.174.dbg.deb`: Same as before but with debug symbols
 
 
 ### Install
 ---
-
+```bash
+LKM# dpkg -i ../linux-image-4.19.174.deb
+```
 
 ### References
 ---
