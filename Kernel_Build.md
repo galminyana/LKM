@@ -2,6 +2,20 @@
 ---
 _A la Debian_ way
 
+### Default Locations
+---
+Standard Debian running Kernel has this locations:
+
+- Kernel Headers: `/usr/src/linux-headers-VERSION-amd64`
+
+```markup
+apt-get install linux-headers-amd64
+```
+- Kernel Modules (Binaries): `/lib/modules/VERSION-amd64/`
+- Running Kernel .config file: `/boot/config-VERSION-amd64`
+
+For a custom Kernel into Debian, keep reading.
+
 ### Config
 ---
 ```bash
