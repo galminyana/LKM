@@ -11,7 +11,7 @@ Standard Debian running Kernel has this locations:
 ```markup
 apt-get install linux-headers-amd64
 ```
-- Kernel Modules (Binaries): `/lib/modules/VERSION-amd64/`
+- Kernel Modules (Binaries): `/lib/modules/VERSION-amd64/` (use to compile `/lib/modules/linux-headers-4.19.0-14-amd64/build`)
 - Running Kernel .config file: `/boot/config-VERSION-amd64`
 
 For a custom Kernel into Debian, keep reading.
@@ -25,7 +25,6 @@ LKM# make nconfig                 <== ncurses setup
 LKM# make config                  <== Old setup
 ```
 For the current kernel config, check files at `/boot/config-VERSION`. It stores installed kernels configs. 
-
 
 ### Build 
 ---
@@ -57,7 +56,9 @@ In upper folder, among others, creates this files:
 ```bash
 LKM# dpkg -i ../linux-image-4.19.174_amd64.deb
 ```
-
+### Modules
+---
+Located at /
 ### References
 ---
 - Build a Debian Kernel Package: [https://wiki.debian.org/BuildADebianKernelPackage](https://wiki.debian.org/BuildADebianKernelPackage)
