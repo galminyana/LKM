@@ -47,15 +47,15 @@ make[4]: *** Waiting for unfinished jobs....
 ```
 ### Results
 ---
-In upper folder creates:
-- `linux-image-4.19.174.deb`: Image to install
-- `linux-image-4.19.174.dbg.deb`: Same as before but with debug symbols
-
+In upper folder, among others, creates this files:
+- `linux-image-4.19.174_amd64.deb`: Image to install
+- `linux-image-4.19.174.dbg_amd64.deb`: Same as before but with debug symbols
+- `linux-headers-4.19.174.dbg_amd64.deb` Headers for the Kernel
 
 ### Install
 ---
 ```bash
-LKM# dpkg -i ../linux-image-4.19.174.deb
+LKM# dpkg -i ../linux-image-4.19.174_amd64.deb
 ```
 
 ### References
