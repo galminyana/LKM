@@ -39,4 +39,45 @@ void my_exit(void);
 After that, the functions `module_init()` and `module_exit()` macros are used to indicate the functions to run at module insertion/removal.
 The rest of the `MODULE_*` macros are used to give some information about the module. But in the `MODULE_LICENSE` does not indicate a "GPL" license, the tainted flag is set in the Kernel.
 
+### Makefile
+---
+```c
+obj-m += helloworld.o
+modules:
+	@$(MAKE) -C $(KERNEL_ROOT) M=$(shell pwd) modules
+clean:
+	@$(MAKE) -C $(KERNEL_ROOT) M=$(shell pwd) clean 
+```
 
+To compile the module, the `KERNEL_ROOT` parameter needs to be specified. In the case of Debian Kernel Headers, the path is `/lib/modules/4.19.0-14-amd64/build`. Hence, to compile, the complete command must be:
+```bash
+KERNEL_ROOT=/lib/modules/4.19.0-14-amd64/build make
+```
+### Results
+---
+Once the module is compiled, it generates several files. The module file itself is the one with the **.ko** extension.
+
+To get module information:
+```bash
+LKM# modinfo helloworld.ko 
+filename:       /root/LKM/004-HelloWorld/helloworld.ko
+description:    LKM Example
+license:        GPL v3
+author:         Guillem Alminyana
+depends:        
+retpoline:      Y
+name:           helloworld
+vermagic:       4.19.0-14-amd64 SMP mod_unload modversions 
+LKM# 
+``` 
+To load the module into the Kernel:
+```bash
+LKM# insmod helloworld.ko 
+LKM# lsmod|grep helloworld
+helloworld             16384  0
+LKM#
+```
+To remove the module:
+```bash
+LKM# rmmod helloworld
+```
