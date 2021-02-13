@@ -51,7 +51,12 @@ clean:
 
 To compile the module, the `KERNEL_ROOT` parameter needs to be specified. In the case of Debian Kernel Headers, the path is `/lib/modules/4.19.0-14-amd64/build`. Hence, to compile, the complete command must be:
 ```bash
-KERNEL_ROOT=/lib/modules/4.19.0-14-amd64/build make
+LKM# KERNEL_ROOT=/lib/modules/4.19.0-14-amd64/build make
+make[1]: se entra en el directorio '/usr/src/linux-headers-4.19.0-14-amd64'
+  Building modules, stage 2.
+  MODPOST 1 modules
+make[1]: se sale del directorio '/usr/src/linux-headers-4.19.0-14-amd64'
+LKM#
 ```
 ### Results
 ---
