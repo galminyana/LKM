@@ -53,11 +53,25 @@ To compile the module, the `KERNEL_ROOT` parameter needs to be specified. In the
 ```bash
 LKM# KERNEL_ROOT=/lib/modules/4.19.0-14-amd64/build make
 make[1]: se entra en el directorio '/usr/src/linux-headers-4.19.0-14-amd64'
+  CC [M]  /root/LKM/004-HelloWorld/helloworld.o
   Building modules, stage 2.
   MODPOST 1 modules
+  CC      /root/LKM/004-HelloWorld/helloworld.mod.o
+  LD [M]  /root/LKM/004-HelloWorld/helloworld.ko
 make[1]: se sale del directorio '/usr/src/linux-headers-4.19.0-14-amd64'
 LKM#
 ```
+
+To clean:
+```bash
+LKM# KERNEL_ROOT=/lib/modules/4.19.0-14-amd64/build make clean
+make[1]: se entra en el directorio '/usr/src/linux-headers-4.19.0-14-amd64'
+  CLEAN   /root/LKM/004-HelloWorld/.tmp_versions
+  CLEAN   /root/LKM/004-HelloWorld/Module.symvers
+make[1]: se sale del directorio '/usr/src/linux-headers-4.19.0-14-amd64'
+LKM#
+```
+
 ### Results
 ---
 Once the module is compiled, it generates several files. The module file itself is the one with the **.ko** extension.
@@ -85,4 +99,23 @@ LKM#
 To remove the module:
 ```bash
 LKM# rmmod helloworld
+```
+### Reviewing Module Log Printed Messages
+---
+This can be checked with `dmesg`, however, it will print lot of information from the Kernel among ith the module logs:
+```bash
+LKM# dmesg
+...REMOVED...
+[ 1297.197873] helloworld: module license 'GPL v3' taints kernel.
+[ 1297.197876] Disabling lock debugging due to kernel taint
+[ 1297.199031] Hello World
+[ 1373.750760] Exiting... Bye World
+```
+A trick:
+```bash
+LKM# tail -f /var/log/kern.log -n 0
+Feb 13 13:00:00 debian kernel: [ 1717.082601] Hello World		<== Message when `insmod` the module
+Feb 13 13:00:04 debian kernel: [ 1721.761415] Exiting... Bye World	<== Message when `rmmod` the module
+^C
+LKM#
 ```
