@@ -49,12 +49,12 @@ Also some special format is defined for the printed messages _overwriting_ to `p
 - `__LINE__` the line number where the printing is done
 
 This gives the following format on log messages and printed messages:
-```markup
-LKM# tail /var/log/kern.log -n 0 -f
+```bash
+LKM# dmesg
 Feb 16 23:01:51 debian kernel: [  537.197758] helloworld: module license 'GPL v3' taints kernel.
 Feb 16 23:01:51 debian kernel: [  537.197760] Disabling lock debugging due to kernel taint
-Feb 16 23:01:51 debian kernel: [  537.198931] helloworld->__lkm_init:27:__ Hello World
-Feb 16 23:01:58 debian kernel: [  544.085541] helloworld->__lkm_exit:33:__ Exiting... Bye World
+Feb 16 23:01:51 debian kernel: [  537.198931] helloworld->lkm_init:27: Hello World
+Feb 16 23:01:58 debian kernel: [  544.085541] helloworld->lkm_exit:33: Exiting... Bye World
 LKM#
 ```
 ### Makefile
