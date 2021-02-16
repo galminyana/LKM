@@ -90,4 +90,32 @@ LKM#
 #define KERN_DEFAULT	KERN_SOH "d"	/* the default kernel loglevel */
 ```
 This log levels must be tagged in the `printk` call.
+For the message to be printed in console, the `printk()` log level must be lower than current console log level.
 
+### Log Level
+---
+To know the default log levels setup in the Kernel, can check the `.config` file. In Debian, the `config-VERSION` file located at `/boot`:
+```bash
+LKM# cat /boot/config-4.19.0-14-amd64 |grep LOGLEVEL
+CONFIG_CONSOLE_LOGLEVEL_DEFAULT=7
+CONFIG_CONSOLE_LOGLEVEL_QUIET=4
+CONFIG_MESSAGE_LOGLEVEL_DEFAULT=4
+LKM# 
+```
+This values can be configured in the Kernel configuration process before building it, in the "Kernel Hacking" section.
+To get the current running log levels, can access to:
+```bash
+LKM# cat /proc/sys/kernel/printk
+4	4	1	7
+LKM# 
+```
+Where:
+- First number is the Current Console Log Level
+- Second number is the Default Log Level when the Log Level is not specified in the `printk()` function
+- Third number is the minimum value for Console Log Level
+- Fourth number is the default value for Console Log Level 
+
+Using `dmesg` the console log level can be changed with the `-n [1..15]` option. The example will make all log levels to be printed in the console:
+```bash
+LKM# dmesg -n 7
+```
