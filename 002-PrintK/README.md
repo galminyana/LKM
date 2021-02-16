@@ -46,6 +46,10 @@ LKM# dmesg
 [ 2375.134465] helloworld->lkm_init:23: Hello Emergency
 LKM#
 ```
+### PrintK Formats
+--- 
+Can be found at [https://www.kernel.org/doc/Documentation/printk-formats.txt](https://www.kernel.org/doc/Documentation/printk-formats.txt)
+
 ### printk.h
 ---
 ```c
