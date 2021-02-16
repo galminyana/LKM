@@ -4,6 +4,8 @@
 ### Code
 ---
 ```c
+#define pr_fmt(fmt)	KBUILD_MODNAME "->%s:%d: " fmt, __func__, __LINE__
+
 #include <linux/module.h>
 #include <linux/init.h>
 
@@ -39,6 +41,22 @@ void my_exit(void);
 The `module_init()` and `module_exit()` are used to indicate the functions to run at module insertion/removal.
 The rest of the `MODULE_*` macros are used to give some information about the module. If the `MODULE_LICENSE` is not set to "GPL", the tainted flag is set in the Kernel.
 
+Also some special format is defined for the printed messages _overwriting_ to `pr_fmt()` at:
+```c
+#define pr_fmt(fmt)	KBUILD_MODNAME "->%s:%d: " fmt, __func__, __LINE__
+```
+- `__func__` is for the function name where the printing is done
+- `__LINE__` the line number where the printing is done
+
+This gives the following format on log messages and printed messages:
+```markup
+LKM# tail /var/log/kern.log -n 0 -f
+Feb 16 23:01:51 debian kernel: [  537.197758] helloworld: module license 'GPL v3' taints kernel.
+Feb 16 23:01:51 debian kernel: [  537.197760] Disabling lock debugging due to kernel taint
+Feb 16 23:01:51 debian kernel: [  537.198931] helloworld->__lkm_init:27:__ Hello World
+Feb 16 23:01:58 debian kernel: [  544.085541] helloworld->__lkm_exit:33:__ Exiting... Bye World
+LKM#
+```
 ### Makefile
 ---
 ```c
