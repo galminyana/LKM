@@ -2,14 +2,7 @@
  Author: Guillem Alminyana
  License: GPL v3
 
- Basic example of a LKM: 
-   - When the module is loaded, prints the "Hello World" in the kernel logs.
-   - When the module is removed, prints in the logs the "Bye World" text
 
- * Two functions declared that are called when module is loaded/removed
- * The 'pr_info' uses the 'printk' from the kernel to log the text with information log level
- * 'module_init' and 'module_exit' macros are to define the init and exit functions
- * The 'MODULE_*' macros are informational for the Kernel
 
    */
 
@@ -21,8 +14,6 @@
 
 static int __init lkm_init(void)
 {
-	// Uses print_k with log level information
-	// The message is printed in the kernel log messages
 	pr_info("Hello World\n");         //<- \n is required at the end
 	return 0;
 }
