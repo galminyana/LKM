@@ -1,6 +1,51 @@
 ## PrintK
 ---
+### Code
+---
+```c
+#define pr_fmt(fmt)	KBUILD_MODNAME "->%s:%d: " fmt, __func__, __LINE__
 
+#include <linux/module.h>
+#include <linux/init.h>
+
+static int __init lkm_init(void)
+{
+	printk(KERN_INFO "This is KERN_INFO log level\n");
+	pr_info("Hello Info\n");
+
+	printk(KERN_ALERT "This is KERN_ALERT log level\n");
+	pr_alert("Hello Alert\n");
+
+	printk(KERN_EMERG "This is KERN_EMERG log level\n");
+	pr_emerg("Hello Emergency\n");
+
+	return 0;
+}
+
+static void __exit lkm_exit(void)
+{
+	pr_info("Exiting... Bye World\n");
+}
+
+module_init(lkm_init);		//<- Tells that Init Kernel Module is the lkm_init function
+module_exit(lkm_exit);		//<- Tells that Exit Kernel Function is lkm_exit
+
+MODULE_AUTHOR("Guillem Alminyana");
+MODULE_LICENSE("GPL v3");
+MODULE_DESCRIPTION("LKM Example");
+```
+From the HelloWorld.c example, `lkm_init` is recoded to show the basic usage of `printk()`. The log level must be specified, and then the text to print. Just below each `printk()` call, the equivalent `pr_*` macro is used. When module is inserted the logs are:
+```bash
+LKM# dmesg
+...[REMOVED]...
+[ 2375.134449] This is KERN_INFO log level
+[ 2375.134453] helloworld->lkm_init:17: Hello Info
+[ 2375.134454] This is KERN_ALERT log level
+[ 2375.134460] helloworld->lkm_init:20: Hello Alert
+[ 2375.134462] This is KERN_EMERG log level
+[ 2375.134465] helloworld->lkm_init:23: Hello Emergency
+LKM#
+```
 ### printk.h
 ---
 ```c
