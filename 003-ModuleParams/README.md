@@ -1,4 +1,4 @@
-## Module PArameters
+## Module Parameters
 ---
 ### Code
 ---
