@@ -61,6 +61,15 @@ LKM# dmesg
 [ 1425.557696] helloworld->lkm_init:34: Param 2: message: Hello
 LKM# 
 ```
+But notice, that the "World" part has not been printed in the logs. To avoid this, the `insmod` must put single quotes to close the entire string and the double quotes:
+```bash
+LKM# insmod helloworld.ko counter=1 message='"Hello World"'
+LKMs# dmesg
+[ 1796.392891] helloworld->lkm_init:30: Loading Module
+[ 1796.392894] helloworld->lkm_init:32: Param 1: counter: 1
+[ 1796.392896] helloworld->lkm_init:34: Param 2: message: Hello World
+LKM# 
+```
 To check the params, can use `modinfo`. Will tell which params and the type of them:
 ```bash
 LKM# modinfo helloworld
