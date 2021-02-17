@@ -32,10 +32,40 @@
  */
 #define module_param(name, type, perm)                          \
         module_param_named(name, name, type, perm)
-
+```
+```c
 /**
- * module_param_unsafe - same as module_param but taints kernel
+ * module_param_array - a parameter which is an array of some type
+ * @name: the name of the array variable
+ * @type: the type, as per module_param()
+ * @nump: optional pointer filled in with the number written
+ * @perm: visibility in sysfs
+ *
+ * Input and output are as comma-separated values.  Commas inside values
+ * don't work properly (eg. an array of charp).
+ *
+ * ARRAY_SIZE(@name) is used to determine the number of elements in the
+ * array, so the definition must be visible.
  */
-#define module_param_unsafe(name, type, perm)                   \
-        module_param_named_unsafe(name, name, type, perm)
+#define module_param_array(name, type, nump, perm)              \
+        module_param_array_named(name, name, type, nump, perm)
+```
+```c
+/**
+ * module_param_string - a char array parameter
+ * @name: the name of the parameter
+ * @string: the string variable
+ * @len: the maximum length of the string, incl. terminator
+ * @perm: visibility in sysfs.
+ *
+ * This actually copies the string when it's set (unlike type charp).
+ * @len is usually just sizeof(string).
+ */
+#define module_param_string(name, string, len, perm)                    \
+        static const struct kparam_string __param_string_##name         \
+                = { len, string };                                      \
+        __module_param_call(MODULE_PARAM_PREFIX, name,                  \
+                            &param_ops_string,                          \
+                            .str = &__param_string_##name, perm, -1, 0);\
+        __MODULE_PARM_TYPE(name, "string")
 ```
