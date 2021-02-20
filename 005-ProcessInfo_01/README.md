@@ -69,7 +69,7 @@ extern struct task_struct *pid_task(struct pid *pid, enum pid_type);
 #### proc_info
 ```c
 
-#include "mylkmlib.h"			//<- Own lib
+#include "mylkmlib.h"							//<- Own lib
 #include <linux/module.h>
 #include <linux/init.h>
 
@@ -81,20 +81,21 @@ MODULE_PARM_DESC(process_id ,"Process ID for the target process");
 
 static int __init lkm_init(void)
 {
-	struct task_struct *target_process = target_process = mylkm_get_task_struct_by_pid(process_id);  //<- target_process := Process information
+	struct task_struct *target_process = 
+		mylkm_get_task_struct_by_pid(process_id);		//<- target_process := Process information
 	
-	if(!IS_ERR_OR_NULL(target_process))      //<- Check if got an error from previous call
+	if(!IS_ERR_OR_NULL(target_process))				//<- Check if got an error from previous call
 	{
 		pr_info("======= Process Details ========\n");
 		pr_info("PID to check: %d\n", process_id);
 		
-		mylkm_print_task_pid_details(target_process);  //<- Prints Name, TGID, PID
+		mylkm_print_task_pid_details(target_process);  		//<- Prints Name, TGID, PID
 		
-		mylkm_print_task_parent_pid_details(target_process);  //<- Prints the same but for parent
+		mylkm_print_task_parent_pid_details(target_process);  	//<- Prints the same but for parent
 	
 		pr_info("================================\n");
 		
-	} else {			//<- Error
+	} else {							//<- Error
 		
 		pr_info("Invalid PID: %d\n", process_id);
 		return -EINVAL;
@@ -167,7 +168,8 @@ static inline struct task_struct * mylkm_get_task_struct_by_pid(int pid)
 */
 static inline int mylkm_print_task_pid_details(struct task_struct *tsk) 
 {
-	PTR_NULL_CHECK(tsk);		//<- Check if tsk parameter pointer is not NULL
+	PTR_NULL_CHECK(tsk);					//<- Check if tsk parameter pointer is not NULL
+	
 	pr_info("Task Binary: %s TGID: %d PID: %d\n", 
 			tsk->comm,
 			tsk->tgid,		
@@ -180,7 +182,8 @@ static inline int mylkm_print_task_pid_details(struct task_struct *tsk)
 */
 static inline int mylkm_print_task_parent_pid_details(struct task_struct *tsk) 
 {
-	PTR_NULL_CHECK(tsk);		//<- Check if tsk parameter pointer is not NULL
+	PTR_NULL_CHECK(tsk);					//<- Check if tsk parameter pointer is not NULL
+	
 	/* Process 'task_struct' holds a pointer to the parent 'task_struct' or NULL if is the init() process */
 	pr_info("Parent Task Binary: %s TGID: %d PID: %d\n",
 			tsk->real_parent->comm,
