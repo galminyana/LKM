@@ -5,10 +5,9 @@ LEt's explore Internal Data Structures in the Kernel, where information for Proc
 
 In user space a Process has a Main thread (`main()` function), and depending on the process it spawns Child Threads. In Kernel Space, Kernel mantains a Task List, and inside, the Main Thread and each Child Thread is treated as a Task.
 
-| User Space ||| Kernel Space |||
-|-|-|-|-|-|-|
-|    Main Thread ||| Task List |||
-|  ChildThread 1 | Child Thread 2 || Main Thread | Child Thread 1| Child Thread X |
+| User Space | Kernel Space |
+|-|-|
+| ![Alt text](Images/UserSpace.PNG?raw=true "User Space") | ![Alt text](Images/KErnelSpace.PNG?raw=true "Kernel Space") |
 
 
 
@@ -23,4 +22,6 @@ In user space a Process has a Main thread (`main()` function), and depending on 
 | Thread ID identifies threads | PID identifies Task ID. Main Thread TGID == PID and for Other Threads TGID != PID |
 | Easy to dump mempry | Need to lock memory before access to it |
 
+#### TGID and PID Relationship
+---
 ![Alt text](Images/TGIDandPID.png?raw=true "TGID and PID Relationship")
