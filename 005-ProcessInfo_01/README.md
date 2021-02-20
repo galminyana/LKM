@@ -12,7 +12,6 @@ In Kernel Space is different. Kernel mantains a Task List, and inside, the Main 
 | User Space ||
 |-|-|
 |    Main Thread ||
-|-|-|
 |  ChildThread 1 | Child Thread 2 |
 
 
