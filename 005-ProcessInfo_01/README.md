@@ -25,3 +25,4 @@ In user space a Process has a Main thread (`main()` function), and depending on 
 #### TGID and PID Relationship
 ---
 ![Alt text](Images/TGIDandPID.png?raw=true "TGID and PID Relationship")
+Looking the diagram, in Kernel, for each thread of a process, the TGID and PID will be stored. For the Main thread, the TGID and PID will be the same, but for each of the Child Threads, the TGID will be the same as the Main Thread, but the PID will be different.
