@@ -29,3 +29,35 @@ In Kernel, for each thread of a process, the TGID and PID will be stored. For th
 | TGID vs PID |
 |-|
 | ![Alt text](Images/TGIDandPID.png?raw=true "TGID and PID Relationship") |
+
+### Struct `task_struct` at `include/linux/sched.h`
+---
+Each task in the Kernel is represented by this structure
+```c
+struct task_struct
+```
+The relevant members of this structure are:
+
+- `pid_t pid;` and `pid_t tgid;`: To store the PID and TGID
+- `char comm[TASK_COM_LEN];`: Stores the executable name without the full path
+- `struct task_struct __rcu *real_parent;`:
+- `struct task_struct __rcu *parent;`: 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
