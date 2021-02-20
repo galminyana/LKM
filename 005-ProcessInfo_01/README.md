@@ -7,7 +7,7 @@ In user space a Process has a Main thread (`main()` function), and depending on 
 
 | User Space | Kernel Space |
 |-|-|
-| ![Alt text](Images/UserSpace.PNG?raw=true "User Space") | ![Alt text](Images/KErnelSpace.PNG?raw=true "Kernel Space") |
+| ![Alt text](Images/UserSpace.PNG?raw=true "User Space") | ![Alt text](Images/KernelSpace.PNG?raw=true "Kernel Space") |
 
 
 
