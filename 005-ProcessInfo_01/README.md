@@ -9,10 +9,10 @@ In user space we have a Process, that has a Main thread (main function), and dep
 
 In Kernel Space is different. Kernel mantains a Task List, and inside, the Main Thread and each Child Thread is a Task.
 
-| User Space |||
-|-|-|-|
-|    Main Thread |||
-|  ChildThread 1 | Child Thread 2 ||
+| User Space ||| Kernel Space |
+|-|-|-|-|
+|    Main Thread ||| Task List |||
+|  ChildThread 1 | Child Thread 2 || Main Thread | Child Thread 1| Child Thread X |
 
 
 
