@@ -12,5 +12,13 @@ In user space a Process has a Main thread (`main()` function), and depending on 
 
 
 
-### 
+### User vs Kernel Space
 ---
+
+| User Space Process | Kernel Space Tasks |
+|-|-|
+| Only has access to own Virtual Memory | Has access to any memory in Kernel Space |
+| Can not access other processes space | Access to everything |
+| PID is the Process ID | TGID is the Thread Group ID that identifies Main Thead |
+| Thread ID identifies threads | PID identifies Task ID. Main Thread TGID == PID and for Other Threads TGID != PID |
+| Easy to dump mempry | Need to lock memory before access to it |
