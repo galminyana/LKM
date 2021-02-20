@@ -3,13 +3,16 @@
 #include <linux/module.h>
 #include <linux/init.h>
 
-static int counter;
-module_param(counter, int, S_IWUSR | S_IRUGO);
-MODULE_PARM_DESC(counter, "A Integer Param");
+static int counter;                                     //<- This is 'counter' integer parameter
+module_param(counter, int, S_IWUSR | S_IRUGO);          //<- Tells Kernel that 'counter' is a parameter
+                                                        //   S_IWUSR | SIRUGO are the perms for the sysfs file
+MODULE_PARM_DESC(counter, "A Integer Param");           //<- 'modinfo' description for the parameter
 
-static char *message = NULL;
-module_param(message, charp, S_IWUSR | SIRUGO);
-MODULE_PARM_DESC(message, "A Message string PAram");
+
+static char *message = NULL;                            //<- This is 'message' string parameter
+module_param(message, charp, S_IWUSR | SIRUGO);         //<- Tells Kernel that 'message' is a parameter
+                                                        //   S_IWUSR | SIRUGO are the perms for the sysfs file
+MODULE_PARM_DESC(message, "A Message string PAram");    //<- 'modinfo' description for the parameter
 
 static int __init lkm_init(void)
 {
