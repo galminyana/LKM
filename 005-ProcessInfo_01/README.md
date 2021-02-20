@@ -22,3 +22,5 @@ In user space a Process has a Main thread (`main()` function), and depending on 
 | PID is the Process ID | TGID is the Thread Group ID that identifies Main Thead |
 | Thread ID identifies threads | PID identifies Task ID. Main Thread TGID == PID and for Other Threads TGID != PID |
 | Easy to dump mempry | Need to lock memory before access to it |
+
+![Alt text](Images/TGIDandPID.png?raw=true "TGID and PID Relationship")
