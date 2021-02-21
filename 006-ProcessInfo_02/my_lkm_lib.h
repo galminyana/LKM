@@ -72,5 +72,11 @@ static inline int mylkm_print_task_parent_pid_details(struct task_struct *tsk)
 	return DEFAULT_SUCCESS;
 }
 
-
+/*
+ Returns the number of threads in a task group 
+*/
+static inline int mylkm_get_task_thread_count(struct task_struct *tsk)
+{
+		return tsk->signal->nr_threads;
+}
 
