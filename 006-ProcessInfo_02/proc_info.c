@@ -21,6 +21,8 @@ static int __init lkm_init(void)
 		mylkm_print_task_pid_details(target_process);  //<- Prints Name, TGID, PID
 		
 		mylkm_print_task_parent_pid_details(target_process);  //<- Prints the same but for parent
+		
+		pr_info("\nNumber of threads: %d\n", mylkm_get_task_thread_count(target_process));	//<- Prints number of threads
 	
 		pr_info("================================\n");
 		
