@@ -1,5 +1,5 @@
 
-#include "mylkmlib.h"			//<- Own lib
+#include "my_lkm_lib.h"			//<- Own lib
 #include <linux/module.h>
 #include <linux/init.h>
 
