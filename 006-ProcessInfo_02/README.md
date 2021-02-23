@@ -17,18 +17,16 @@ struct list_head thread_node;
 - `thread_node`: 
 - `thread_group`: 
 
-### `linux/sched/signal.h` -> `signal_struct` 
+### `linux/sched/signal.h` -> struct `signal_struct` 
 ---
-
 This struct defines:
 
 ```c
 int nr_threads;			//<- This keeps the number of threads in the thread group
-struct list_head thread_head;
+struct list_head thread_head;	//<- List with threads
 ```
 
-
-### `list_head`
+### `linux/types.h` -> struct `list_head`
 ---
 ```c
 struct list_head {
