@@ -12,6 +12,7 @@ MODULE_PARM_DESC(process_id ,"Process ID for the target process");
 static int __init lkm_init(void)
 {
 	struct task_struct *target_process = target_process = mylkm_get_task_struct_by_pid(process_id);  //<- target_process := Process information
+	struct task_struct *process_thread;
 	
 	if(!IS_ERR_OR_NULL(target_process))      //<- Check if got an error from previous call
 	{
@@ -21,6 +22,8 @@ static int __init lkm_init(void)
 		mylkm_print_task_pid_details(target_process);  //<- Prints Name, TGID, PID
 		
 		mylkm_print_task_parent_pid_details(target_process);  //<- Prints the same but for parent
+		
+		pr_info("\nNumber of threads: %d\n", mylkm_get_task_thread_count(target_process));	//<- Prints number of threads
 	
 		pr_info("================================\n");
 		
