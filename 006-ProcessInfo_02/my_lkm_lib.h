@@ -19,7 +19,7 @@
 #include<linux/sched.h>		//<- Defines the 'task_struct'
 #include<linux/pid.h>
 #include<linux/cred.h>
-
+#include<linux/sched/signal.h>
 /*
  Constants definition
 */
