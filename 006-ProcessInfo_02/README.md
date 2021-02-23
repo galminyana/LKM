@@ -49,7 +49,7 @@ struct list_head {
 #define __for_each_thread(signal, t)	\
 	list_for_each_entry_rcu(t, &(signal)->thread_head, thread_node)
 
-#define for_each_thread(p, t)		\
-	__for_each_thread((p)->signal, t)
+#define for_each_thread(p, t)		\		//<- Checks each thread for the given task_struct in "p", 
+	__for_each_thread((p)->signal, t)		//   and each task_struct for threads is returned in "t" as a task_struct
 ```
 
