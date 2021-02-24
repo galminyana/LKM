@@ -19,6 +19,7 @@ In the `task_struct`, also has defined a
 ```c
 struct mm_struct *mm;			//<- Task Memory Map
 ```
+If this struct pointer value is NULL, can be because the task is a thread.
 
 ### `linux/mm_types.h` -> `struct mm_struct`
 ---
@@ -26,6 +27,7 @@ This struct, defines a
 ```c
 struct file __rcu *exe_file;		//<- Struct to store information about the binary file
 ```
+If this struct pointer value is NULL, can be because the task does not have a path
 
 ### `linux/fs.h` -> `struct_file`
 ---
