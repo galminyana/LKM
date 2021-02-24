@@ -5,7 +5,7 @@
 ---
 The struct, defines a:
 ```c
-char comm[TASK_COMM_LEN]		//<- Name of the binary for the task
+char comm[TASK_COMM_LEN];		//<- Name of the binary for the task
 ```
 Where `TASK_COMM_LEN` is defined as:
 ```c
