@@ -1,55 +1,59 @@
-## Process Info 02 (Threads)
+## Process Info 03 (Bin executable and Paths)
 ---
 
 ### More on `task_struct`
 ---
-
-On Signal Handlers Section, can find:
+The struct, defines a:
 ```c
-struct signal_struct *signal;
+char comm[TASK_COMM_LEN]		//<- Name of the binary for the task
 ```
-
-Also:
+Where `TASK_COMM_LEN` is defined as:
 ```c
-struct list_head thread_group;
-struct list_head thread_node;
+#define TASK_COMM_LEN 16
 ```
-- `thread_node`: 
-- `thread_group`: 
+That means that the executable name is trucated at 16 bytes. **But not the full path**
 
-### `linux/sched/signal.h` -> struct `signal_struct` 
+### Let's go for the full path
 ---
-This struct defines:
-
+In the `task_struct`, also has defined a 
 ```c
-int nr_threads;			//<- This keeps the number of threads in the thread group
-struct list_head thread_head;	//<- List with threads
+struct mm_struct *mm;			//<- Task Memory Map
 ```
 
-### `linux/types.h` -> struct `list_head`
+### `linux/mm_types.h` -> `struct mm_struct`
 ---
+This struct, defines a
 ```c
-struct list_head {
-	struct list_head *next, *prev;
-};
+struct file __rcu *exe_file;		//<- Struct to store information about the binary file
 ```
-### Macros of interest on `linux/sched/signal.h`
+
+### `linux/fs.h` -> `struct_file`
 ---
+Defines a 
 ```c
-/*
- * Careful: do_each_thread/while_each_thread is a double loop so
- *          'break' will not work as expected - use goto instead.
+struct path f_path;			//<- Struct to store full binary path
+```
+To get the path string, can use the following kernel function defined at `linux/fs/d_path.c`, that returns a string:
+```c
+/**
+ * d_path - return the path of a dentry
+ * @path: path to report
+ * @buf: buffer to return value in
+ * @buflen: buffer length
+ *
+ * Convert a dentry into an ASCII path name. If the entry has been deleted
+ * the string " (deleted)" is appended. Note that this is ambiguous.
+ *
+ * Returns a pointer into the buffer or an error code if the path was
+ * too long. Note: Callers should use the returned pointer, not the passed
+ * in buffer, to use the name! The implementation often starts at an offset
+ * into the buffer, and may leave 0 bytes at the start.
+ *
+ * "buflen" should be positive.
  */
-#define do_each_thread(g, t) \
-	for (g = t = &init_task ; (g = t = next_task(g)) != &init_task ; ) do
-
-#define while_each_thread(g, t) \
-	while ((t = next_thread(t)) != g)
-
-#define __for_each_thread(signal, t)	\
-	list_for_each_entry_rcu(t, &(signal)->thread_head, thread_node)
-
-#define for_each_thread(p, t)		\		//<- Checks each thread for the given task_struct in "p", 
-	__for_each_thread((p)->signal, t)		//   and each task_struct for threads is returned in "t" as a task_struct
+char *d_path(const struct path *path, char *buf, int buflen);
 ```
+
+
+
 
