@@ -114,7 +114,8 @@ static inline int mylkm_print_task_binary_name(struct task_struct *tsk)
 			temp_path = kmalloc(PATH_MAX, GFP_KERNEL);
 			if (temp_path == NULL) panic("Error in kmalloc()\n");
 			
-			binary_path = d_path(tsk->mm->exe_file, temp_path, PATH_MAX);
+			binary_path = d_path(&tsk->mm->exe_file->f_path, temp_path, PATH_MAX);
+			
 			pr_info("Binary Path: %s\n", binary_path); 
 			
 			kfree(temp_path);
