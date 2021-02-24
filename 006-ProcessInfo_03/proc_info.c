@@ -31,6 +31,8 @@ static int __init lkm_init(void)
 			mylkm_print_task_pid_details(process_thread);
 		}
 
+		mylkm_print_task_binary_name(target_process);
+		
 		pr_info("================================\n");
 		
 	} else {											//<- Error
