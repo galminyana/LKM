@@ -16,10 +16,17 @@
 /*********************/
 /* REQUIRED INCLUDES */
 /*********************/
-#include<linux/sched.h>		//<- Defines the 'task_struct'
+#include<linux/sched.h>
 #include<linux/pid.h>
 #include<linux/cred.h>
 #include<linux/sched/signal.h>
+#include<linux/path.h>
+#include<linux/fs_struct.h>
+#include<linux/dcache.h>
+#include<linux/limits.h>
+#include<linux/slab.h>
+#include<linux/fs.h>
+
 /*
  Constants definition
 */
@@ -80,3 +87,23 @@ static inline int mylkm_get_task_thread_count(struct task_struct *tsk)
 		return tsk->signal->nr_threads;
 }
 
+/*
+ Prints the binary name and with the path
+ */
+static inline int mylkm_print_task_binary_name(struct task_struct *tsk) 
+{
+	
+	PTR_NULL_CHECK(tsk);		//<- Check if tsk parameter pointer is not NULL
+	
+	if (tsk->mm == NULL)		//<- Checks if the Task has a memory map struct defined
+	{
+		pr_info("Task received is NULL - Reason could be a Kernel Thread\n");
+	} else {
+		
+	}
+
+	
+}
+	
+	
+	
