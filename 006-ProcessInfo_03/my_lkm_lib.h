@@ -16,16 +16,16 @@
 /*********************/
 /* REQUIRED INCLUDES */
 /*********************/
-#include<linux/sched.h>
-#include<linux/pid.h>
-#include<linux/cred.h>
-#include<linux/sched/signal.h>
-#include<linux/path.h>
-#include<linux/fs_struct.h>
-#include<linux/dcache.h>
-#include<linux/limits.h>
-#include<linux/slab.h>
-#include<linux/fs.h>
+#include <linux/sched.h>
+#include <linux/pid.h>
+#include <linux/cred.h>
+#include <linux/sched/signal.h>
+#include <linux/path.h>
+#include <linux/fs_struct.h>
+#include <linux/dcache.h>
+#include <linux/limits.h>
+#include <linux/slab.h>
+#include <linux/fs.h>
 
 /*
  Constants definition
@@ -92,13 +92,35 @@ static inline int mylkm_get_task_thread_count(struct task_struct *tsk)
  */
 static inline int mylkm_print_task_binary_name(struct task_struct *tsk) 
 {
+	char *temp_path;		//<- Temporary pointer to the path
+	char *binary_path;		//<- Real pointer to path string
 	
 	PTR_NULL_CHECK(tsk);		//<- Check if tsk parameter pointer is not NULL
 	
 	if (tsk->mm == NULL)		//<- Checks if the Task has a memory map struct defined
 	{
 		pr_info("Task received is NULL - Reason could be a Kernel Thread\n");
+		
 	} else {
+		
+		down_read(&tsk->mm->mmap_sem);		//<- Lock 
+		
+		if (tsk->mm->exe_file == NULL)		//<- Check if binary file exists
+		{
+			pr_info("Binary Path: (none)\n");
+			
+		} else {
+						
+			temp_path = kmalloc(PATH_MAX, GFP_KERNEL);
+			if (temp_path == NULL) panic("Error in kmalloc()\n");
+			
+			binary_path = d_path(tsk->mm->exe_file, temp_path, PATH_MAX);
+			pr_info("Binary Path: %s\n", binary_path); 
+			
+			kfree(temp_path);
+		}
+		
+		up_read(&tsk->mm->mmap_sem);		//<- Unlock
 		
 	}
 
