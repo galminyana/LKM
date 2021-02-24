@@ -125,7 +125,7 @@ static inline int mylkm_print_task_binary_name(struct task_struct *tsk)
 		
 	}
 
-	
+	return DEFAULT_SUCCESS;
 }
 	
 	
