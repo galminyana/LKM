@@ -29,6 +29,18 @@ struct file __rcu *exe_file;		//<- Struct to store information about the binary 
 ```
 If this struct pointer value is NULL, can be because the task does not have a path
 
+Also defines 
+```c
+struct rw_semaphore mmap_sem;
+```
+This is the semaphore to lock/unlock the memory map. To do, can use the following functions defined at `linux/rwsem.h`:
+```c
+extern void down_read(struct rw_semaphore *sem);        //<- Hold memory map semaphore to read (locks fpr reading)
+extern void up_read(struct rw_semaphore *sem);          //<- Releases memory map semaphore from reading (unlocks from reading)
+extern void down_write(struct rw_semaphore *sem);       //<- Locks for writing
+extern void up_write(struct rw_semaphore *sem);         //<- Unlocks from writing
+```
+It's mandatory to lock/unlock when accessing the memory map struct.
 ### `linux/fs.h` -> `struct_file`
 ---
 Defines a 
