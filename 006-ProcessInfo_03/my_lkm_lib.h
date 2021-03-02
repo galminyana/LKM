@@ -118,7 +118,7 @@ static inline int mylkm_print_task_binary_name(struct task_struct *tsk)
 			
 			pr_info("Binary Path: %s\n", binary_path); 
 			
-			if(NULL != temp_path) kfree(temp_path);
+			kfree(temp_path);
 		}
 		
 		up_read(&tsk->mm->mmap_sem);		//<- Unlock
@@ -139,10 +139,7 @@ static inline int mylkm_print_task_root_path_pwd(struct task_struct *tsk) {
 
 	PTR_NULL_CHECK(tsk);
 
-	// Root and Pwd for the process
-
 	temp_path = kmalloc(PATH_MAX, GFP_KERNEL);
-
 	if(NULL == temp_path) panic("Error in kmalloc()\n");
 
 	get_fs_root(tsk->fs, &root_path);
@@ -153,8 +150,7 @@ static inline int mylkm_print_task_root_path_pwd(struct task_struct *tsk) {
 	pwd_path_name = d_path(&pwd_path, temp_path, PATH_MAX);
 	pr_info("PWD Path: %s\n", pwd_path_name);
 
-        // release memory
-        if(NULL != temp_path) kfree(temp_path);
+        kfree(temp_path);
 
 	return DEFAULT_SUCCESS;
 
