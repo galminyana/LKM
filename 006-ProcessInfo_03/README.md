@@ -67,7 +67,45 @@ To get the path string, can use the following kernel function defined at `linux/
  */
 char *d_path(const struct path *path, char *buf, int buflen);
 ```
-
-
-
-
+### `linux/path.h` -> `struct path`
+---
+```c 
+struct path {
+	struct vfsmount *mnt;
+	struct dentry *dentry;
+} __randomize_layout;
+```
+To access the path, Kernel provides functions and macros.
+### `linux/fs_struct.h` -> Functions and Macros to get the Path, Root and PWD
+---
+```c
+/**
+ * Returns the root
+ * @fs: For example tsk->fs
+ * @root: buffer to return value in
+ */
+static inline void get_fs_root(struct fs_struct *fs, struct path *root);
+/**
+ * Returns the PWD
+ * @fs: For example tsk->fs 
+ * @pwd: buffer to return value in
+ */
+static inline void get_fs_pwd(struct fs_struct *fs, struct path *pwd);
+```
+### `linux/slab.h`
+---
+The `malloc()` and `free()` equivalents on Kernel are defined:
+```c
+/**
+ * kmalloc - allocate memory
+ * @size: how many bytes of memory are required.
+ * @flags: the type of memory to allocate.
+ */
+static __always_inline void *kmalloc(size_t size, gfp_t flags);
+/**
+ * kfree - free previously allocated memory
+ * @objp: pointer returned by kmalloc.
+ * If @objp is NULL, no operation is performed.
+ */
+void kfree(const void *objp);
+```
