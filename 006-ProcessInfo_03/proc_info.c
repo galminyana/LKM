@@ -31,7 +31,11 @@ static int __init lkm_init(void)
 			mylkm_print_task_pid_details(process_thread);
 		}
 
+		pr_info("\nTask binary path/name:\n");							//<- Prints the full path for the binary
 		mylkm_print_task_binary_name(target_process);
+		
+		pr_info("\nTask's Root path and PWD:\n");						//<- Binary root path and pwd path
+		print_task_root_path_pwd(target_process);
 		
 		pr_info("================================\n");
 		
