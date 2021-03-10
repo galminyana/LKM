@@ -27,9 +27,22 @@ static inline void list_del_init (struct list_head *entry)
 }
 ```
 
-### `struct kobject` in `linux/kobject.h`
+### Hiding on `/sys/modules`
 ---
-A `kobject` struct represents a kernel object. 
+Just adding the line:
+```c
+kobject_del(&THIS_MODULE->mkobj.kobj);
+```
+The `THIS_MODULE` macro and the `struct module` are defined as:
+```c
+extern struct module __this_module;
+#define THIS_MODULE (&__this_module)
+```
+The function is defined on `linux/kobject.h`:
+```c
+extern void kobject_del(struct kobject *kobj);
+```
+A `kobject` struct represents a kernel object, and is defined on `linux/kobject.h`:
 
 ```c
 struct kobject {
@@ -50,18 +63,6 @@ struct kobject {
 	unsigned int uevent_suppress:1;
 };
 ```
-
-```c
-static void hide_module(void)
-{
-  list_del_init(&__this_module.list);
-  kobject_del(&THIS_MODULE->mkobj.kobj);
-}
-```
-
-
-
-
 
 ## References
 ---
