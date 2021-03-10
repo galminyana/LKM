@@ -1,15 +1,35 @@
-# Stealth 01
+## Stealth 01
 ---
 
 Loaded modules can be listed by `lsmod` and found through `/proc/modules` and `/sys/modules`.
 
-## Hiding the LKM
+### Hiding from `lsmod`
 --- 
-This technique hides the module from `lsmod`, `/proc/modules` and `/sys/modules`. However, won't be able to remove module by using `rmmod`.
+When module is loaded, it's associated with a struct module. All kernel modules are stored in a global liked list. Each loaded module is added to this linked list. The modules are populated in `/proc/modules` from this list, and the `lsmod` command reads `/proc/modules` to give it's output. 
+
+To hide module from `lsmod` just need to remove module from that list:
+
+```c
+list_del_init(&__this_module.list);
+```
+
+This function is defined on `linux/list.h`:
+
+```c
+/**
+ * list_del_init - deletes entry from list and reinitialize it.
+ * @entry: the element to delete from the list.
+ */
+static inline void list_del_init (struct list_head *entry)
+{
+	__list_del_entry(entry);
+	INIT_LIST_HEAD(entry);
+}
+```
 
 ### `struct kobject` in `linux/kobject.h`
 ---
-A `kobject` struct represents a kernel object. For each module loaded, exists a `kobject` referencing to it. [More info here](https://www.win.tue.nl/~aeb/linux/lk/lk-13.html)
+A `kobject` struct represents a kernel object. 
 
 ```c
 struct kobject {
