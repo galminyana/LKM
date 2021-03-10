@@ -46,4 +46,4 @@ static void hide_module(void)
 ## References
 ---
 - [Kernel Kobject Device Model](https://medium.com/powerof2/the-kernel-kobject-device-model-explained-89d02350fa03)
-- [Linux Kernel: Sysfs and Kobjects]([More info here](https://www.win.tue.nl/~aeb/linux/lk/lk-13.html)
+- [Linux Kernel: Sysfs and Kobjects](https://www.win.tue.nl/~aeb/linux/lk/lk-13.html)
