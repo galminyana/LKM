@@ -64,6 +64,45 @@ struct kobject {
 };
 ```
 
+### Show to `lsmod`
+---
+Just have to add back the module to the linked list. Need to define a `list_head` struct that will store the pointer to the head of the list (that's the previous element for the position of the module in the list).
+```c
+struct list_head  * module;
+```
+This struct is defined on `linux/types.h` as
+```c
+struct list_head {
+	struct list_head *next, *prev;
+};
+```
+Then, when going to remove the module from the list, first save that pointer that's stored in the `THIS_MODULE` object on the `list.prev` fields
+```c
+module = THIS_MODULE->list.prev;
+```
+Afterthat the module can be added to the list and become visible to `lsmod` and `/proc/modules`
+```c 
+list_add(&__this_module.list, module);
+```
+The `list_add` is defined on `linux/list.h`
+```c 
+/**
+ * list_add - add a new entry
+ * @new: new entry to be added
+ * @head: list head to add it after
+ *
+ * Insert a new entry after the specified head.
+ * This is good for implementing stacks.
+ */
+static inline void list_add(struct list_head *new, struct list_head *head)
+{
+	__list_add(new, head, head->next);
+}
+```
+### Show to `/sysfs/modules`
+---
+
+
 ## References
 ---
 - [Kernel Kobject Device Model](https://medium.com/powerof2/the-kernel-kobject-device-model-explained-89d02350fa03)
