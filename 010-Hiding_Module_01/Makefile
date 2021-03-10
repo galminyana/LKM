@@ -1,4 +1,4 @@
-obj-m +=  proc_info.o
+obj-m +=  hide_module.o
 
 modules:
 	@$(MAKE) -C $(KERNEL_ROOT) M=$(shell pwd) modules
