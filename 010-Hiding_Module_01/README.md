@@ -1,4 +1,4 @@
-## Stealth 01
+## Stealth LKM
 ---
 
 Loaded modules can be listed by `lsmod` and found through `/proc/modules` and `/sys/modules`.
@@ -101,7 +101,7 @@ static inline void list_add(struct list_head *new, struct list_head *head)
 ```
 ### Show to `/sysfs/modules`
 ---
-
+TBD
 
 ## References
 ---
