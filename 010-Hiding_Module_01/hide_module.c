@@ -14,15 +14,17 @@ static int __init lkm_init(void)
 
         pr_info("  -- Hiding from lsmod\n");
         
-        list_del_init(&__this_module.list);
+        list_del_init(&__this_module.list);             //<- Remove module entry from list
 
         pr_info("  -- Showing for lsmod and /proc\n");
 
-        list_add(&__this_module.list, module );
+        list_add(&__this_module.list, module );         //<- Adds module back to list to 
+                                                        //   it's original position
         
         pr_info("  -- Hiding for sysfs\n");
 
-        kobject_del(&(&__this_module)->mkobj.kobj);
+        kobject_del(&(&__this_module)->mkobj.kobj);     //<- Delete this module kobject
+                                                        //   from the modules list
 
         pr_info("Done!\n");
 
