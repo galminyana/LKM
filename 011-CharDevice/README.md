@@ -53,5 +53,12 @@ struct file_operations exer_file_operations = {
 };
 ```
 
-### Hiding on `/sys/modules`
+### Register / Unregister Device
 ---
+To do use the functions
+```c
+static inline int register_chrdev(unsigned int major, const char *name,
+				  const struct file_operations *fops);
+
+static inline void unregister_chrdev(unsigned int major, const char *name);
+```
