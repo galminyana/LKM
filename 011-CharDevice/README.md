@@ -20,7 +20,7 @@ struct file_operations {
 ```
 Functions required once implemented, have to be assigned to the struct
 ```c
-ssize_t dev_open(struct inode *pinode, struct file *pfile) 
+static int dev_open(struct inode *pinode, struct file *pfile) 
 {
     pr_info("Device opened\n");
     return 0;
@@ -38,13 +38,13 @@ ssize_t dev_write(struct file *pfile, const char __user *buffer, size_t length, 
     return 0;
 }
 
-ssize_t dev_close(struct inode *pinode, struct file *pfile)
+static int dev_close(struct inode *pinode, struct file *pfile)
 {
     pr_info("Device closed\n");
     return 0;
 }
 
-struct file_operations exer_file_operations = { 
+struct file_operations dev_file_operations = { 
     .owner = THIS_MODULE,
     .open = dev_open,
     .read = dev_read,
@@ -55,10 +55,16 @@ struct file_operations exer_file_operations = {
 
 ### Register / Unregister Device
 ---
-To do use the functions
+To do use the functions:
 ```c
+/*
+ If major == 0 this functions will dynamically allocate a major and return its number.
+ If major > 0 this function will attempt to reserve a device with the given major number and will return zero on success.
+ Returns a -ve errno on failure.
+*/
 static inline int register_chrdev(unsigned int major, const char *name,
 				  const struct file_operations *fops);
 
 static inline void unregister_chrdev(unsigned int major, const char *name);
 ```
+
