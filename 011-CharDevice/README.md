@@ -22,8 +22,8 @@ Functions required once implemented, have to be assigned to the struct
 
 
 - OPENCallback function called each time the device is opened. 
- - @pinode A pointer to an inode object (defined in linux/fs.h)
- - @pfile A pointer to a file object (defined in linux/fs.h)
+  - @pinode A pointer to an inode object (defined in linux/fs.h)
+  - @pfile A pointer to a file object (defined in linux/fs.h)
 ```c
 static int dev_open(struct inode *pinode, struct file *pfile) 
 {
