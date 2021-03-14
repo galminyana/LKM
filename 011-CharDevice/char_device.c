@@ -73,7 +73,7 @@ static int __init lkm_init(void)
 
         device_struct = device_create(device_class,NULL,                       //<- Register Device Driver
                                       MKDEV(number_major, 0),
-                                      NULL,"mychar");  
+                                      NULL, DEVICE_NAME);  
         if (IS_ERR(device_struct)){                                            //<- Error checking for cleanup
                 class_destroy(device_class);                                   //<-- Cleanup device class
                 unregister_chrdev(number_major, DEVICE_NAME);                  //<-- Cleanup registered device
