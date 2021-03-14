@@ -84,7 +84,7 @@ To do use the functions:
 /*
  If major == 0 this functions will dynamically allocate a major and return its number.
  If major > 0 this function will attempt to reserve a device with the given major number and will return zero on success.
- Returns a -ve errno on failure.
+ Returns a -ve errno on failure. If  major is 0, returns the major number if no error
 */
 static inline int register_chrdev(unsigned int major, const char *name,
 				  const struct file_operations *fops);
@@ -92,3 +92,90 @@ static inline int register_chrdev(unsigned int major, const char *name,
 static inline void unregister_chrdev(unsigned int major, const char *name);
 ```
 
+### Create / Destroy the Device Class
+---
+Have to define a `class` pointer:
+```c
+struct class {
+	const char		*name;
+	struct module		*owner;
+
+	const struct attribute_group	**class_groups;
+	const struct attribute_group	**dev_groups;
+	struct kobject			*dev_kobj;
+
+	int (*dev_uevent)(struct device *dev, struct kobj_uevent_env *env);
+	char *(*devnode)(struct device *dev, umode_t *mode);
+
+	void (*class_release)(struct class *class);
+	void (*dev_release)(struct device *dev);
+
+	int (*shutdown_pre)(struct device *dev);
+
+	const struct kobj_ns_type_operations *ns_type;
+	const void *(*namespace)(struct device *dev);
+
+	const struct dev_pm_ops *pm;
+
+	struct subsys_private *p;
+};
+```
+And then register the device class using the macro, where owner is the module (`THIS_MODULE`) and the name the string for the class name
+```c 
+#define class_create(owner, name)	
+```
+Example:
+```c 
+#define DEVICE_CLASS "name"
+#define DEVICE_NAME  "file_name"
+
+static struct class*  device_class =  NULL;
+
+device_class = class_create(THIS_MODULE, DEVICE_CLASS);   
+```
+To unregister a Device Class, use the function below, knowing that the parameter is the device class returned when created before:
+```c 
+extern void class_destroy(struct class *cls);
+```
+Example:
+```c
+class_destroy(device_class); 
+```
+### Create / Destroy the Device Driver
+---
+A device driver object is defined on a `device_struct` defined at `linux/device.h`.
+To Create a device driver, have to declare a pointer to a device_struct:
+```c
+static struct device* device_struct = NULL; 
+``
+And call the function:
+```c
+struct device *device_create(struct class *cls, struct device *parent, dev_t devt, void *drvdata, const char *fmt, ...);
+```
+Example:
+```c 
+#define DEVICE_CLASS "my_char_device"
+#define DEVICE_NAME  "my_char"
+
+static struct device* device_struct = NULL;  
+
+device_struct = device_create(device_class,NULL, MKDEV(number_major, 0), NULL, DEVICE_NAME);  
+```
+The `MKDEV` macro creates the `mknod` file with the major and minur numbers indicated, and is defined as:
+```c
+#define MKDEV(ma,mi)	(((ma) << MINORBITS) | (mi))
+```
+To Delete a Device Driver, use the function:
+```c 
+extern void device_destroy(struct class *cls, dev_t devt);
+```
+Example:
+```c 
+device_destroy(device_class, MKDEV(number_major, 0));
+```
+
+
+
+
+### References
+---
