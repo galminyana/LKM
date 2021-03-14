@@ -4,7 +4,7 @@
 
 ### `linux/fs.h` -> `struct file_operations`
 --- 
-To define the functions to call when an event occurs. 
+The file_operations structure from `linux/fs.h` lists the callback functions associated with file operations. Char devices usually implement open, read, write and release calls.
 ```c
 struct file_operations {
 	struct module *owner;
@@ -19,31 +19,44 @@ struct file_operations {
 } __randomize_layout;
 ```
 Functions required once implemented, have to be assigned to the struct
+
+
+- OPENCallback function called each time the device is opened. 
+ - @pinode A pointer to an inode object (defined in linux/fs.h)
+ - @pfile A pointer to a file object (defined in linux/fs.h)
 ```c
 static int dev_open(struct inode *pinode, struct file *pfile) 
 {
     pr_info("Device opened\n");
     return 0;
 }
+```
 /* From device to user, like a cat /dev/device */
+```c
 ssize_t dev_read(struct file *pfile, char __user *buffer, size_t length, loff_t *offset) 
 {
     pr_info("User Reading from char device\n");
     return 0;
 }
+```
 /* From user to device, like a echo 1 > /dev/device */
+```c 
 ssize_t dev_write(struct file *pfile, const char __user *buffer, size_t length, loff_t *offset) 
 {
     pr_info("User Writing to device\n");
     return 0;
 }
+```
 
+```c 
 static int dev_close(struct inode *pinode, struct file *pfile)
 {
     pr_info("Device closed\n");
     return 0;
 }
-
+```
+The callback functions are defined in the struct `file_operations`:
+```c 
 struct file_operations dev_file_operations = { 
     .owner = THIS_MODULE,
     .open = dev_open,
