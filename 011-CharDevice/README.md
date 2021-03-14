@@ -147,7 +147,7 @@ A device driver object is defined on a `device_struct` defined at `linux/device.
 To Create a device driver, have to declare a pointer to a device_struct:
 ```c
 static struct device* device_struct = NULL; 
-``
+```
 And call the function:
 ```c
 struct device *device_create(struct class *cls, struct device *parent, dev_t devt, void *drvdata, const char *fmt, ...);
