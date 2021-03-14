@@ -174,8 +174,8 @@ Example:
 device_destroy(device_class, MKDEV(number_major, 0));
 ```
 
-
-
-
-### References
+### Results
 ---
+This will create a character device file in `/dev` with the automagically assigned major number, and trough this file kernel and user space can change information.
+
+
