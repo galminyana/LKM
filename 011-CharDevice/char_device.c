@@ -10,8 +10,6 @@
 
 int number_major = 0;                                                  //<- Major number for the Device
 static int times_opened = 0;                                           //<- Times the device been opened
-static unsigned char message[20] = "Reading from Device";              //<- Buffer to store text comming from user space
-static int message_size = 20;                                          //<- Size of the buffer
 static struct device* device_struct = NULL;                            //<- Device Driver struct pointer. To create the /dev/FILE
 static struct class*  device_class =  NULL;                            //<- Device Driver class struct pointer
 
