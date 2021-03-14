@@ -100,6 +100,6 @@ module_exit(lkm_exit);                                                          
 
 MODULE_AUTHOR("Guillem Alminyana");
 MODULE_LICENSE("GPL v2");
-MODULE_DESCRIPTION("LKM Hide Module Example");
+MODULE_DESCRIPTION("LKM Char Device Example");
 
 
