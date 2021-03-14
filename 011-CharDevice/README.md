@@ -57,11 +57,8 @@ ssize_t dev_write(struct file *pfile, const char __user *buffer, size_t length, 
 }
 ```
 - **RELEASE_Callback**: Release function that is called when the device is closed/released by the userspace program
- *  @param inodep A pointer to an inode object (defined in linux/fs.h)
- *  @param filep A pointer to a file object (defined in linux/fs.h)
   - **@pinode**: A pointer to an inode object (defined in linux/fs.h)
   - **@pfile**: A pointer to a file object (defined in linux/fs.h)
-
 ```c 
 static int dev_close(struct inode *pinode, struct file *pfile)
 {
