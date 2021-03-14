@@ -21,7 +21,7 @@ struct file_operations {
 Functions required once implemented, have to be assigned to the struct
 
 
-- OPENCallback function called each time the device is opened. 
+- OPEN_Callback function called each time the device is opened. 
   - @pinode A pointer to an inode object (defined in linux/fs.h)
   - @pfile A pointer to a file object (defined in linux/fs.h)
 ```c
@@ -31,7 +31,12 @@ static int dev_open(struct inode *pinode, struct file *pfile)
     return 0;
 }
 ```
-/* From device to user, like a cat /dev/device */
+- READ_Callback This function is called whenever device is being read from user space
+  - @pfile A pointer to a file object (defined in linux/fs.h)
+  - @buffer The pointer to the buffer to which this function writes the data
+  - @length Buffer Length
+  - @offset The offset (if required)
+
 ```c
 ssize_t dev_read(struct file *pfile, char __user *buffer, size_t length, loff_t *offset) 
 {
