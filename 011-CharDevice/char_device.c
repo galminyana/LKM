@@ -88,6 +88,7 @@ static int __init lkm_init(void)
 
 static void __exit lkm_exit(void)
 {
+        pr_info("Unloading Module...\n");
         device_destroy(device_class, MKDEV(number_major, 0));                   //<- Remove the device
         pr_info("   Removed the device.\n");
         class_unregister(device_class);                                         //<- Unregister the device class
