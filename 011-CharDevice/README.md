@@ -21,9 +21,9 @@ struct file_operations {
 Functions required once implemented, have to be assigned to the struct
 
 
-- OPEN_Callback function called each time the device is opened. 
-  - @pinode A pointer to an inode object (defined in linux/fs.h)
-  - @pfile A pointer to a file object (defined in linux/fs.h)
+- **OPEN_Callback**: function called each time the device is opened. 
+  - **@pinode**: A pointer to an inode object (defined in linux/fs.h)
+  - **@pfile**: A pointer to a file object (defined in linux/fs.h)
 ```c
 static int dev_open(struct inode *pinode, struct file *pfile) 
 {
@@ -31,11 +31,11 @@ static int dev_open(struct inode *pinode, struct file *pfile)
     return 0;
 }
 ```
-- READ_Callback This function is called whenever device is being read from user space
-  - @pfile A pointer to a file object (defined in linux/fs.h)
-  - @buffer The pointer to the buffer to which this function writes the data
-  - @length Buffer Length
-  - @offset The offset (if required)
+- **READ_Callback**: This function is called whenever device is being read from user space
+  - **@pfile**: A pointer to a file object (defined in linux/fs.h)
+  - **@buffer**: The pointer to the buffer to which this function writes the data
+  - **@length**: Buffer Length
+  - **@offset**: The offset (if required)
 
 ```c
 ssize_t dev_read(struct file *pfile, char __user *buffer, size_t length, loff_t *offset) 
@@ -44,7 +44,11 @@ ssize_t dev_read(struct file *pfile, char __user *buffer, size_t length, loff_t 
     return 0;
 }
 ```
-/* From user to device, like a echo 1 > /dev/device */
+- **WRITE_Callback**: This function is called when the device is being written to from user space
+  - **@pfile**: A pointer to a file object (defined in linux/fs.h)
+  - **@buffer**: The buffer to that contains the string to write to the device
+  - **@length**: Buffer Length
+  - **@offset**: The offset (if required)
 ```c 
 ssize_t dev_write(struct file *pfile, const char __user *buffer, size_t length, loff_t *offset) 
 {
@@ -52,6 +56,11 @@ ssize_t dev_write(struct file *pfile, const char __user *buffer, size_t length, 
     return 0;
 }
 ```
+- **RELEASE_Callback**: Release function that is called when the device is closed/released by the userspace program
+ *  @param inodep A pointer to an inode object (defined in linux/fs.h)
+ *  @param filep A pointer to a file object (defined in linux/fs.h)
+  - **@pinode**: A pointer to an inode object (defined in linux/fs.h)
+  - **@pfile**: A pointer to a file object (defined in linux/fs.h)
 
 ```c 
 static int dev_close(struct inode *pinode, struct file *pfile)
