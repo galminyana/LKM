@@ -82,17 +82,21 @@ static int __init lkm_init(void)
                 pr_info("   Created Device Driver\n");
         }
  
-        pr_info("Done initializing module.\n");
+        pr_info("Done initializing module. Created Device on /dev/%s.\n", DEVICE_NAME);
         return 0;
 }
 
 static void __exit lkm_exit(void)
 {
         device_destroy(device_class, MKDEV(number_major, 0));                   //<- Remove the device
+        pr_info("   Removed the device.\n");
         class_unregister(device_class);                                         //<- Unregister the device class
+        pr_info("   Device Class unregistered.\n");       
         class_destroy(device_class);                                            //<- Remove the device class
+        pr_info("   Device Class destroyed.\n");        
         unregister_chrdev(number_major, DEVICE_NAME);                           //<- Unregister the major number 
-        pr_info("Exiting... Bye World\n");
+        pr_info("   Major Number released.\n");        
+        pr_info("Exiting... Bye.\n");
 }
 
 module_init(lkm_init);                                                                                  //<- Tells that Init Kernel Module is the lkm_init function
