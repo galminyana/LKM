@@ -30,6 +30,15 @@ static ssize_t dev_read(struct file *pfile, char __user *buffer, size_t length, 
 {
         pr_info("User Reading from char device\n");
 
+        //simple_read_from_buffer(buffer, length, offset, message, strlen(message));
+        message_length = copy_to_user(buffer, message, strlen(message));        //<- Puts the message in the user space        
+
+        if (message_length < 0) {                                               //<- Error checking if returns >0
+                pr_err("   Error sending message to user.\n");
+                return -EFAULT;
+        }
+
+        pr_info("   Sent message to user.\n");
         return 0;
 }
 
