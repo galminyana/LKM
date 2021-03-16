@@ -13,6 +13,9 @@ static int times_opened = 0;                                           //<- Time
 static struct device* device_struct = NULL;                            //<- Device Driver struct pointer. To create the /dev/FILE
 static struct class*  device_class =  NULL;                            //<- Device Driver class struct pointer
 
+static char message[256] = "Hello World";                              //<- Message to print
+static int message_length;                                             //<- Message length
+
 static int dev_open(struct inode *pinode, struct file *pfile)
 {
         times_opened++;
