@@ -48,6 +48,13 @@ static ssize_t dev_read(struct file *pfile, char __user *buffer, size_t length, 
 static ssize_t dev_write(struct file *pfile, const char __user *buffer, size_t length, loff_t *offset)
 {
         pr_info("User Writing to device\n");
+
+        message_length = copy_from_user(message, buffer, length);                //<- Gets data from user space
+
+        message_length = length;                                                 //<- Length of the received string
+
+        pr_info("   Readed %d characters\n", message_length);
+        
         return 0;
 }
 
