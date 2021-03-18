@@ -16,8 +16,16 @@ static struct class*  device_class =  NULL;                            //<- Devi
 static char message[256] = "Hello World";                              //<- Message to print
 static int message_length;                                             //<- Message length
 
+static DEFINE_MUTEX(my_char_mutex);                                    //<- Initializes a mutex
+
 static int dev_open(struct inode *pinode, struct file *pfile)
 {
+        if (!mutex_trylock(&my_char_mutex))                            //<- Try to lock the resource. Returns 1 if successfully locked
+        {
+                pr_err("Device Busy. Can't lock it.\n");
+                return -EBUSY;                                         //<- Resource busy error
+        }
+
         times_opened++;
         pr_info("Device /dev/%s opened %d times.\n", DEVICE_NAME, times_opened);
         return 0;
@@ -25,6 +33,8 @@ static int dev_open(struct inode *pinode, struct file *pfile)
 
 static int dev_close( struct inode *pinode, struct file *pfile)
 {
+        mutex_unlock(&my_char_mutex);                                  //<- Unlock the mutex
+        
         pr_info("Device /dev/%s closed.\n", DEVICE_NAME);
         return 0;
 }
@@ -99,6 +109,8 @@ static int __init lkm_init(void)
                 pr_info("   Created Device Driver\n");
         }
  
+        mutex_init(&my_char_mutex);                                            //<- Initialize the mutex in runtime
+        
         pr_info("Done initializing module. Created Device on /dev/%s.\n", DEVICE_NAME);
         return 0;
 }
@@ -113,7 +125,8 @@ static void __exit lkm_exit(void)
         class_destroy(device_class);                                            //<- Remove the device class
         pr_info("   Device Class destroyed.\n");        
         unregister_chrdev(number_major, DEVICE_NAME);                           //<- Unregister the major number 
-        pr_info("   Major Number released.\n");        
+        pr_info("   Major Number released.\n");      
+        mutex_destroy(&my_char_mutex);                                          //<- Mutex released
         pr_info("Exiting... Bye.\n");
 }
 

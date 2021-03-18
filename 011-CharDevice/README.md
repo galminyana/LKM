@@ -173,6 +173,19 @@ Example:
 ```c 
 device_destroy(device_class, MKDEV(number_major, 0));
 ```
+### `linux/err.h` -> `IS_ERR`
+---
+Must be careful with this macro, as covers values from -1 to -4095. It represents an error code. Values from 0x00 to 0xfffff001 are not considered error. As well, don't use to check NULL error values as are not covered.
+```c
+#define MAX_ERRNO	4095
+#define IS_ERR_VALUE(x) unlikely((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
+static inline bool __must_check IS_ERR(__force const void *ptr)
+{
+	return IS_ERR_VALUE((unsigned long)ptr);
+}
+```
+
+
 
 ### Results
 ---
