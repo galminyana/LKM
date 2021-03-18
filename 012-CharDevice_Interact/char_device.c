@@ -20,10 +20,10 @@ static DEFINE_MUTEX(my_char_mutex);                                    //<- Init
 
 static int dev_open(struct inode *pinode, struct file *pfile)
 {
-        if (!mutex_trylock(&my_char_Mutex))
+        if (!mutex_trylock(&my_char_mutex))                            //<- Try to lock the resource. Returns 1 if successfully locked
         {
                 pr_err("Device Busy. Can't lock it.\n");
-                return -EBUSY                                          //<- Resource busy error
+                return -EBUSY;                                         //<- Resource busy error
         }
 
         times_opened++;
