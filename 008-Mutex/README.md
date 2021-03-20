@@ -38,7 +38,7 @@ mutex_init(&my_mutex);
 ```
 ### Mutex Lock
 ---
-- ```**mutex_lock```Aquire the mutex, and if already locked, sleep until available
+- ```cmutex_lock```: Aquire the mutex, and if already locked, sleep until available
 ```c
 void mutex_lock(struct mutex *lock);
 ```
