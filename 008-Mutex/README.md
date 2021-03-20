@@ -69,6 +69,3 @@ int mutex_is_locked(struct mutex *lock);
 mutex_destroy(&my_char_mutex);
 ```
 
-### References
----
-- [Bootlin](https://elixir.bootlin.com/linux/v4.17.18/source/include/linux/mutex.h#L53)
