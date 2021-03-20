@@ -10,7 +10,7 @@ static __always_inline unsigned long __must_check copy_to_user(void __user *to, 
 static __always_inline unsigned long __must_check copy_from_user(void *to, const void __user *from, unsigned long n)
 ```
 
-### Semaphores (`linux/semaphore.h` and `linux/mutex.h`)
+### Mutex (`linux/mutex.h`)
 ---
 Linux provides semaphores for mutex locks. A semaphore is defined as a struct:
 ```c
@@ -23,8 +23,7 @@ struct semaphore {
 ```
 To define the semaphore in the code, use the `DEFINE_SEMAPHORE` macro.
 ```c 
-#define DEFINE_SEMAPHORE(name)	\
-	struct semaphore name = __SEMAPHORE_INITIALIZER(name, 1)
+#define DEFINE_MUTEX(name);
 ```
 The semaphore must be initialized using the `mutex_init` macro, and the param is the defined one before.
 ```c 
