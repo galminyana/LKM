@@ -51,3 +51,29 @@ struct pt_regs {
 };
 ```
 The original syscalls take the arguments from this struct. In case that want to hook a syscall, need to care to get the params fom this structure.
+
+### Write in RO Memory
+---
+Before hooking the syscall, need to make memory writable. For that, the `WP` flag in the `cr0` register must be `0`. With this functions can do:
+```c
+static unsigned long my_cr0;
+
+static inline void my_write_cr0(unsigned long val)
+{
+    unsigned long __force_order;
+    asm volatile("mov %0, %%cr0" : "+r"(val), "+m"(__force_order));
+}
+static inline void my_memory_ro(void)
+{
+    my_write_cr0(my_cr0);
+}
+
+static inline void my_memory_rw(void)
+{
+    my_write_cr0(my_cr0 & ~0x00010000);
+}
+```
+For using, need to define a global `unsigned long` for the `cr0` value and read it using this Kernel function:
+```c
+unsigned long (*read_cr0)(void);
+```
