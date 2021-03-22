@@ -8,20 +8,18 @@
 #include <linux/kernel.h>
 #include <asm/paravirt.h>
 
-
-static unsigned long my_cr0;
-
 /*
  Reads the Value of CR0
+ Returns value of CR0
 */
-static inline void my_read_cr0(void)
+static inline unsigned long my_read_cr0(void)
 {
-        my_cr0 = read_cr0();
+        return read_cr0();
 }
 
 /*
  Writes the value to the CR0 register
- @value: value to apply to CRO0
+ @value: value to apply to CO0
 */
 static inline void my_write_cr0(unsigned long value)
 {
@@ -34,7 +32,7 @@ static inline void my_write_cr0(unsigned long value)
 */
 static inline void my_memory_ro(void)
 {
-    my_write_cr0(my_cr0);
+    my_write_cr0(read_cr0() | 0x10000);
 }
 
 /*
@@ -42,5 +40,6 @@ static inline void my_memory_ro(void)
 */
 static inline void my_memory_rw(void)
 {
-    my_write_cr0(my_cr0 & ~0x00010000);
+    my_write_cr0(read_cr0() & ~0x10000);
 }
+
