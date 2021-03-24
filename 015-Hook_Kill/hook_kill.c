@@ -9,18 +9,23 @@
 
 static unsigned long *__sys_call_table;                         //<- Pointer to the Kernel syscall table
 
-asmlinkage int (*original_kill) (pid_t pid, int sig);
+asmlinkage int (*original_kill) (const struct pt_regs *regs);
 
-
-asmlinkage int hooked_kill(pid_t pid, int sig)
+/*
+ For regs, params are:
+ - di: Signal
+ - si: Process_id
+*/
+asmlinkage int hooked_kill(const struct pt_regs *regs)
 {
         pr_info("   Hooked Syscall!!\n");
 
-        pr_info("   Process %d receives signal %d.\n", sig, sig);
+        pr_info("   Signal %d for process %d.\n", (int) regs->di, (int) regs->si);
 
-        //return orig_shutdown(i, z);
+        //return original_kill(regs);
         return 0;
 }
+
 
 static int __init lkm_init(void)
 {
