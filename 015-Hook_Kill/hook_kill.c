@@ -13,14 +13,14 @@ asmlinkage int (*original_kill) (const struct pt_regs *regs);
 
 /*
  For regs, params are:
- - di: Signal
- - si: Process_id
+ - si: Signal
+ - di: Process_id
 */
 asmlinkage int hooked_kill(const struct pt_regs *regs)
 {
         pr_info("   Hooked Syscall!!\n");
 
-        pr_info("   Signal %d for process %d.\n", (int) regs->di, (int) regs->si);
+        pr_info("   Signal %d for process %d.\n", (int) regs->si, (int) regs->di);
 
         //return original_kill(regs);
         return 0;
