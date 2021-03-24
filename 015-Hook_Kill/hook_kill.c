@@ -7,7 +7,7 @@
 #include "my_memory.h"
 
 
-static unsigned long *__sys_call_table;                         //<- Pointer to the Kernel syscall table
+static unsigned long *__sys_call_table;                          //<- Pointer to the Kernel syscall table
 
 asmlinkage int (*original_kill) (const struct pt_regs *regs);
 
@@ -31,19 +31,19 @@ static int __init lkm_init(void)
 {
         pr_info("Loading Module...\n");
 
-        __sys_call_table = (void *) kallsyms_lookup_name("sys_call_table");             //<- Get address for Kernel Syscall Table
+        __sys_call_table = (void *) kallsyms_lookup_name("sys_call_table");     //<- Get address for Kernel Syscall Table
 
-        if (__sys_call_table == NULL) {
+        if (__sys_call_table == NULL) {                                         //<- Error Checking
                 pr_err("  Can't find syscall table!.\n");
-                return -1;
+                return -EINTR;
         }
 
-        original_kill = (void *) __sys_call_table[__NR_kill];   //<- Save actual address for sys_shutdown
+        original_kill = (void *) __sys_call_table[__NR_kill];                   //<- Save actual address for sys_shutdown
 
-        my_memory_rw();                                 //<- Unprotect Memory
+        my_memory_rw();                                                         //<- Unprotect Memory
 
-        __sys_call_table[__NR_kill] = (unsigned long) hooked_kill;
-
+        __sys_call_table[__NR_kill] = (unsigned long) hooked_kill;              //<- Hook the Syscall Table with the
+                                                                                //   address of hooking function
         my_memory_ro();
 
         return 0;
@@ -55,7 +55,7 @@ static void __exit lkm_exit(void)
 
         my_memory_rw();
 
-        __sys_call_table[__NR_kill] = (unsigned long) original_kill;
+        __sys_call_table[__NR_kill] = (unsigned long) original_kill;             //<- Restore original Syscall
 
         my_memory_ro();
 
