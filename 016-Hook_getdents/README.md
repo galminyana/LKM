@@ -20,21 +20,21 @@ This functions are implemented in `fs/readdir.c`
 ---
 ```c
 struct linux_dirent {
-	unsigned long     d_ino;
-	unsigned long     d_off;
-	unsigned short    d_reclen;
-	char              d_name[1];
+	unsigned long     d_ino;            //<- Inode for the dir entry
+	unsigned long     d_off;            //<- Offset to next linux_dirent
+	unsigned short    d_reclen;         //<- Length for this dirent
+	char              d_name[1];        //<- 
 };
 ```
-### `linux/diret.h` -> `linux_dirent64`
+### `linux/dirent.h` -> `linux_dirent64`
 ---
 ```c
 struct linux_dirent64 {
-	u64             d_ino;
-	s64             d_off;
-	unsigned short	d_reclen;
+	u64             d_ino;            //<- Inode for the dir entry
+	s64             d_off;            //<- Offset to next linux_dirent
+	unsigned short	d_reclen;         //<- Length for this dirent
 	unsigned char   d_type;
-	char            d_name[0];
+	char            d_name[0];        //<- File/Dir name NULL terminated
 };
 ```
 
