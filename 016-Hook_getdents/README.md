@@ -14,6 +14,8 @@ asmlinkage long sys_getdents64(unsigned int fd,
 		               unsigned int count);
                       
 ```
+On success, the number of bytes read is returned.  On end of directory, 0 is returned.  On error, -1 is returned.
+
 This functions are implemented in `fs/readdir.c`
 
 ### `fs/readdir.c` -> `linux_dirent`
