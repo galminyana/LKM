@@ -1,4 +1,4 @@
-obj-m +=  hooking.o
+obj-m +=  hook_getdents.o
 
 modules:
 	@$(MAKE) -C $(KERNEL_ROOT) M=$(shell pwd) modules
