@@ -16,7 +16,7 @@ asmlinkage long sys_getdents64(unsigned int fd,
 ```
 On success, 
 - the number of bytes read is returned.  On end of directory, 0 is returned.  On error, -1 is returned.
-- and `struct linux_dirent __user *dirent` points to the first `linux_dirent` of the list.
+- and `struct linux_dirent __user *dirent` points to the first `linux_dirent` of the list of direntries.
 
 This functions are implemented in `fs/readdir.c`
 
