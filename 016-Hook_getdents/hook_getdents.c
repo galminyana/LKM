@@ -42,9 +42,18 @@ asmlinkage int hooked_getdents64(const struct pt_regs *regs)
 
         dir_current = (void *) dir_current + dir_current->d_reclen;
         pr_info("   Entry FOUR: %s of size %d.\n", dir_current->d_name, dir_current->d_reclen);
+/*
+        dir_current = (void *) direntry;
 
-
-
+        while ( offset < n_size )                      //<- Loop over the direntries and print info
+        {
+                pr_info("   Entry %d: %s, size of %d.\n", i, dir_current->d_name, dir_current->d_reclen);
+                offset += dir_current->d_reclen;
+                dir_current = (void *) dir_current + dir_current->d_reclen;
+                i++;
+        }
+*/
+        
         return n_size;
 }
 
