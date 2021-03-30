@@ -9,6 +9,7 @@ static __always_inline unsigned long __must_check copy_to_user(void __user *to, 
 ```c
 static __always_inline unsigned long __must_check copy_from_user(void *to, const void __user *from, unsigned long n)
 ```
+Both functions if error, return a value < 0.
 
 ### Mutex (`linux/mutex.h`)
 ---
