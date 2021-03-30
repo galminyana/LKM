@@ -8,55 +8,25 @@
 
 #include "my_memory.h"
 
-static unsigned long *__sys_call_table;                             //<- Pointer to the Kernel syscall table
+static unsigned long *__sys_call_table;                         //<- Pointer to the Kernel syscall table
 
-asmlinkage long (*original_getdents64) (const struct pt_regs *regs);//<- Original getdents64 syscall definition
+asmlinkage long (*original_chdir) (const struct pt_regs *regs);     //<- Original getdents64 definition
 
-asmlinkage int hooked_getdents64(const struct pt_regs *regs)
+asmlinkage long hooked_chdir (const struct pt_regs *regs)
 {
-        struct linux_dirent64 __user * dirent_user =                //<- dirent_user gets the pointer from RSI register
-                               (struct linux_dirent64 *)regs->si;
-        struct linux_dirent64 * dirent_ker = NULL;                  //<- The dirent in the kernel space
-        struct linux_dirent64 * dirent_current = NULL;              //<- Will point to the actual dirent
-        long values;                                                //<- Will store results for error checking
-        unsigned long offset = 0;                                   //<- Offset used to point to the next linux_dirent64
-        int size = 0;                                               //<- Stores the size of the dirent entries
+        char __user * file_user = (char *) regs->di;                    //get the pointer to the string
+        char * file_kern = NULL;
 
-        size = original_getdents64(regs);                           //<- Call the original getdents64 to get the linux_direntry-es
-        if (size <= 0) {
-                pr_err("   Error calling original getdents64.\n");
-                return size;
+        int value = copy_from_user(file_kern, file_user, sizeof(file_user));
+
+        if (value) {
+                pr_err("   Error copying from user space.\n");
+                return -EINTR;
         }
 
-        dirent_ker = kzalloc(size, GFP_KERNEL);                     //<- Reserve memory to copy the returned linux_direntry-es from previous line
-        if (dirent_ker == NULL) {                                   //<- Error checking.
-                pr_err("   Error allocating memory space.\n");
-                return size;
-        }
+        pr_info("   File is: %s.\n", file_kern);
 
-        values = copy_from_user(dirent_ker, dirent_user, size);     //<- Move from user space to kernel space
-        if (values) {                                               //   dirent_kern will be a copy of the dirent_user
-                pr_err("   Error copying from user to kernel space.\n");
-                return size;
-        }
-
-        while (offset < size)                                       //<- Loop over all direntries. When offset reaches
-        {                                                           //   the total size, we are done
-                dirent_current = (void *)dirent_ker + offset;       //<- Current directory pints to next one. 
-                                                                    //   dirent_ker plus offset, points the right mem position
-                pr_info("   ENTRY: %s, size %d.\n", dirent_current->d_name, dirent_current->d_reclen);
-                offset += dirent_current->d_reclen;                 //<- Update the offset for the next dirent
-        }
-
-        values = copy_to_user(dirent_user, dirent_ker, size);       //<- Return to user space the dirent in kernel space
-        if (values) {
-                pr_err("    Error copying from kernel to user space.\n");
-                return size;
-        }
-
-        kfree(dirent_ker);                                          //<- Release memory
-
-        return size;
+        return original_chdir(regs);
 }
 
 static int __init lkm_init(void)
@@ -65,16 +35,16 @@ static int __init lkm_init(void)
 
         __sys_call_table = (void *) kallsyms_lookup_name("sys_call_table");     //<- Get address for Kernel Syscall Table
 
-        if (__sys_call_table == NULL) {                                         //<- Error Checking
-                pr_err("  Can't find syscall table.\n");
+        if (__sys_call_table == NULL) {
+                pr_err("  Can't find syscall table!.\n");
                 return -1;
         }
 
-        original_getdents64 = (void *) __sys_call_table[__NR_getdents64];       //<- Save actual address for sys_shutdown
+        original_chdir = (void *) __sys_call_table[__NR_chdir];       //<- Save actual address for sys_shutdown
 
-        my_memory_rw();         
+        my_memory_rw();
 
-        __sys_call_table[__NR_getdents64] = (unsigned long) hooked_getdents64;   //<- Replace the syscall pointer in the syscall table
+        __sys_call_table[__NR_chdir] = (unsigned long) hooked_chdir;   //<- Replace the syscall pointer in the syscall table
 
         my_memory_ro();
 
@@ -87,7 +57,7 @@ static void __exit lkm_exit(void)
 
         my_memory_rw();
 
-        __sys_call_table[__NR_getdents64] = (unsigned long) original_getdents64;   //<- Restore Syscall table with original getdents64
+        __sys_call_table[__NR_chdir] = (unsigned long) original_chdir;
 
         my_memory_ro();
 
