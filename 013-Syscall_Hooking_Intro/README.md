@@ -45,9 +45,9 @@ The params are passed throught CPU regs (SLAE64 notes explains the concept), and
 struct pt_regs {
     unsigned long bx;
     unsigned long cx;
-    unsigned long dx;
-    unsigned long si;
-    unsigned long di;
+    unsigned long dx;		//<- 3th Param
+    unsigned long si;		//<- 2nd Param
+    unsigned long di;		//<- 1st Param
 };
 ```
 The original syscalls take the arguments from this struct. In case that want to hook a syscall, need to care to get the params fom this structure.
