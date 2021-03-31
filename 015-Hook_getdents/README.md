@@ -14,6 +14,7 @@ asmlinkage long sys_getdents64(unsigned int fd,
 		               unsigned int count);
                       
 ```
+Parameters are a file descriptor, a `linux_dirent` struct that will be updated after the syscall, and the count.
 On success, 
 - the number of bytes read is returned.  On end of directory, 0 is returned.  On error, -1 is returned.
 - and `struct linux_dirent __user *dirent` points to the first `linux_dirent` of the list of direntries.
@@ -49,7 +50,7 @@ struct linux_dirent64 {
 
 ### `kmalloc` vs `kzalloc`
 ---
-`kmalloc` does not initialize memory. `kzmalloc` sets memory to zero.
+`kmalloc` does not initialize memory. `kzalloc` sets memory to zero.
 ```c
 /**
  * kmalloc - allocate memory
