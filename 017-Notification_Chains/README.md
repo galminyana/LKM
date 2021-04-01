@@ -27,7 +27,7 @@ typedef int (*notifier_fn_t)(struct notifier_block *nb,
 ```
 Parameters needed are:
 - `nb`: pointer to the first notification block of the chain 
-- `action´: value indicated of the event occurred
+- `action`: value indicated of the event occurred
 - `data`: pointer to pass extra information for the event
 And returns:
 ```c
