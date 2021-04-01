@@ -76,9 +76,9 @@ struct srcu_notifier_head {
 ### Register a block: `notifier_chain_register`
 ```c
 static int notifier_chain_register(struct notifier_block **nl,
-		                   struct notifier_block *n)
+		                   struct notifier_block *n);
 static int notifier_chain_unregister(struct notifier_block **nl,
-		                     struct notifier_block *n)
+		                     struct notifier_block *n);
 ```
 However, wrappers exist for this functions, for example:
 - Keyboard, on `linux/keyboard.h`
