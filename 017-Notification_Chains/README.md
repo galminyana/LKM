@@ -98,7 +98,55 @@ extern int unregister_reboot_notifier(struct notifier_block *);
 ```
 And much more, all of them of the type **`register_XXX_notifier`**.
 
+### Keyboard Notification Chains: Example
+---
+Have to:
+- Create a `notifier_block` struct
+- Create Callback Function: 
+ - Keyboard data for the callback function needs a `keyboard_notifier_param`
+ - Return right value, described before possible values
+- Register the Keyboard Notifier using `register_keyboard_notifier`
 
+### Callback Function
+```c
+typedef int (*notifier_fn_t)(struct notifier_block *nb, 
+                             unsigned long action, 
+                             void *data);
+```
+### Data Parameter: `keyboard_notifier_param`
+Used to pass data related to key pressing. It's defined on `linux/keyboard.h`
+```c
+struct keyboard_notifier_param {
+	struct vc_data *vc;	/* VC on which the keyboard press was done */
+	int down;		/* Pressure of the key? */
+	int shift;		/* Current shift mask */
+	int ledstate;		/* Current led state */
+	unsigned int value;	/* keycode, unicode value or keysym */
+};
+```
+Interesting values from the struct:
+- `value`: Value for the key pressed
+- `down`: Status of the key, 1 key pressed, 0 key released
+
+### Action Parameter
+Describes the type of the event. For Keyboard Notification Chains can be any of thoses (defined in `linux/notifier.h`:
+```c
+/* Console keyboard events.
+ * Note: KBD_KEYCODE is always sent before KBD_UNBOUND_KEYCODE, KBD_UNICODE and
+ * KBD_KEYSYM. */
+#define KBD_KEYCODE		0x0001 /* Keyboard keycode, called before any other */
+#define KBD_UNBOUND_KEYCODE	0x0002 /* Keyboard keycode which is not bound to any other */
+#define KBD_UNICODE		0x0003 /* Keyboard unicode */
+#define KBD_KEYSYM		0x0004 /* Keyboard keysym */
+#define KBD_POST_KEYSYM		0x0005 /* Called after keyboard keysym interpretation */
+```
+Where the event that returns printable ASCII characters is `KBD_KEYSYM`.
+
+### References
+---
+
+- [Post by **hasp0t** at **0x00sec.org**](https://0x00sec.org/t/linux-keylogger-and-notification-chains/4566)
+- [Linux Inside, Notification Chains Chapter](https://0xax.gitbooks.io/linux-insides/content/Concepts/linux-cpu-4.html)
 
 
 
