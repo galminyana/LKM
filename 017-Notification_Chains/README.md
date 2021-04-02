@@ -37,7 +37,7 @@ And returns:
 #define NOTIFY_BAD        (NOTIFY_STOP_MASK|0x0002)           /* Bad/Veto action */
 #define NOTIFY_STOP       (NOTIFY_OK|NOTIFY_STOP_MASK)
 ```
-Where:
+The Callback function must return an `int`, defined on `linux/notifier-h`, and possible values are:
 - NOTIFY_DONE:  notified subsystem not interested in this event.
 - NOTIFY_OK: notification was processed correctly.
 - NOTIFY_BAD: some error, don't call callback functions for this event
