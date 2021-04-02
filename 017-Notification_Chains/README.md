@@ -113,6 +113,8 @@ typedef int (*notifier_fn_t)(struct notifier_block *nb,
                              unsigned long action, 
                              void *data);
 ```
+The callback function will be called each key pressed. In case they are stored in a buffer, be carefull with overflows.
+
 ### Data Parameter: `keyboard_notifier_param`
 Used to pass data related to key pressing. It's defined on `linux/keyboard.h`
 ```c
@@ -142,6 +144,9 @@ Describes the type of the event. For Keyboard Notification Chains can be any of 
 ```
 Where the event that returns printable ASCII characters is `KBD_KEYSYM`.
 
+### Test
+---
+Once compiled and 
 ### References
 ---
 
