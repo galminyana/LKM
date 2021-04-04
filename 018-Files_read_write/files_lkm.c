@@ -36,6 +36,8 @@ static int __init lkm_init(void)
         vfs_read(file, buffer_to_rd, sizeof(buffer_to_rd), &pos);
         pr_info("   Readed: %s.\n", buffer_to_rd);
 
+        set_fs(fs);                                  //<- Restore the address segment
+
         filp_close(file, NULL);                    //<- Close the file
         pr_info("   File Closed.\n");
 
