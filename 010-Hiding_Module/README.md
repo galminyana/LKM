@@ -3,6 +3,28 @@
 
 Loaded modules can be listed by `lsmod` and found through `/proc/modules` and `/sys/modules`.
 
+### `linux/module.h` -> struct `module`
+---
+
+```c
+struct module {
+	enum module_state state;
+
+	/* Member of list of modules */
+	struct list_head list;
+
+	/* Unique handle for this module */
+	char name[MODULE_NAME_LEN];
+
+	/* Sysfs stuff. */
+	struct module_kobject mkobj;
+	struct module_attribute *modinfo_attrs;
+	const char *version;
+	const char *srcversion;
+	struct kobject *holders_dir;
+	[[MORE STUFF DOWN HERE]]
+```
+
 ### Hiding from `lsmod`
 --- 
 When module is loaded, it's associated with a struct module. All kernel modules are stored in a global liked list. Each loaded module is added to this linked list. The modules are populated in `/proc/modules` from this list, and the `lsmod` command reads `/proc/modules` to give it's output. 
