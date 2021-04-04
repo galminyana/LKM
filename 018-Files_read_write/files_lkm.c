@@ -1,50 +1,50 @@
-#include <linux/init.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include <linux/notifier.h>
-#include <linux/keyboard.h>
+#include <linux/fs.h>
+#include <asm/uaccess.h>
 
-
-static int my_keys (struct notifier_block *nb, unsigned long action, void * data)
-{
-        struct keyboard_notifier_param * knd = data;     //<- Get the data for the callback into "knd"
-
-        if ((action == KBD_KEYSYM) && (knd->down))       //<- Check if the callback happened because a ascii key pressed
-        {
-                pr_info("   Pressed key '%c' with value '%d'.\n", knd->value, knd->value);
-        }
-
-        return NOTIFY_OK;
-}
-
-/*
- Declare and Initialize the notifier_block with th Callback function
-*/
-static struct notifier_block nb = {
-        .notifier_call = my_keys                      //<- Assign the callback function to this notification chain
-};
+static char buffer_to_wr[256] = "Hello World";            //<- buffer to print to file
+static char buffer_to_rd[256];                            //<- store what¡s readed from file
 
 static int __init lkm_init(void)
 {
-        pr_info("Loading Module...\n");
 
-        register_keyboard_notifier(&nb);             //<- register the keyboard notification chain
-                                                     //   for the block that already been created
+        struct file * file;                           //<- file struct pointer
+        mm_segment_t fs;                              //<- to save segment
+        loff_t pos;
 
-        pr_info("   Registered Keyboard Notifier.\n");
+        file = filp_open("/root/test_text.txt",       //<- file creation
+                         O_RDWR|O_CREAT, 0700);
 
-        pr_info("Module Loaded.\n");
+        if (IS_ERR(file))                            //<- Error checking
+        {
+                pr_err("  Error opening file.\n");
+                return -1;
+        }
+        pr_info("   File Opened.\n");
+
+        fs = get_fs();                               //<- Save the current segment: KERNEL_DS or USER_DS
+        set_fs(KERNEL_DS);                           //<- Set to use kernel addresses
+
+        pos = 0;                                     //<- Initialize
+
+        vfs_write(file, buffer_to_wr, sizeof(buffer_to_wr), &pos);
+        pr_info("   Writed to file.\n");
+
+        pos = 0;                                    //<- Initialize
+
+        vfs_read(file, buffer_to_rd, sizeof(buffer_to_rd), &pos);
+        pr_info("   Readed: %s.\n", buffer_to_rd);
+
+        filp_close(file, NULL);                    //<- Close the file
+        pr_info("   File Closed.\n");
+
         return 0;
 }
 
 static void __exit lkm_exit(void)
 {
-
-        unregister_keyboard_notifier(&nb);            //<- Unregister the keyboard notifier
-
-        pr_info("   Unregistered Keyboard Notifier.\n");
-
-        pr_info("Exiting... Bye.\n");
+        pr_info("Exiting... Bye World\n");
 }
 
 module_init(lkm_init);
