@@ -37,6 +37,37 @@ int filp_close(struct file *filp, fl_owner_t id)
 - `filp` comes from the `file` struct returned on `filp_open`.
 - `id` can be set to current
 
+### Read and Write File
+---
+```c 
+ssize_t vfs_read  (struct file * filp, char __user * buffer, size_t len, loff_t * pos);
+ssize_t vfs_write (struct file * filp, const char __user * buffer, size_t len, loff_t * pos);
+```
+On both functions, as the `buffer` parameter has the `__user` keyword, both pointers have to point to User Space. 
+
+### User Space to `buffer`
+---
+To make `vfs_read` and `vfs_write` functions to use the buffer pointer in Kernel Space, need to use the `set_fs()` function:
+```c
+void set_fs(mm_segment_t fs);
+```
+Values for `fs`:
+- USER_DS : Kernel default value. Transforms to User Space addresses
+- KERNEL_DS : Transforms to Kernel Space addresses.
+
+To get the actual status of addresses, use the `get_fs()` function:
+```c
+mm_segment_t get_fs();
+```
+#### Declaration of `get_fs()` and `set_fs()` macros
+```c
+#define get_fs()  (current_thread_info()->addr_limit)
+#define set_fs(x) (current_thread_info()->addr_limit = (x))
+```
+
+
+
+
 ### References
 ---
 
