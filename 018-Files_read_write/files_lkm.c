@@ -11,7 +11,8 @@ static int __init lkm_init(void)
         struct file * file;                           //<- file struct pointer
         mm_segment_t fs;                              //<- to save segment
         loff_t pos;
-        
+        long total_bytes = 0;
+
         pr_info("Loading Module.\n");
 
         file = filp_open("/root/test_text.txt",       //<- file creation
@@ -29,13 +30,13 @@ static int __init lkm_init(void)
 
         pos = 0;                                     //<- Initialize
 
-        vfs_write(file, buffer_to_wr, sizeof(buffer_to_wr), &pos);
-        pr_info("   Writed to file.\n");
+        total_bytes = vfs_write(file, buffer_to_wr, sizeof(buffer_to_wr), &pos);
+        pr_info("   Writed %ld bytes to file.\n", total_bytes);
 
         pos = 0;                                    //<- Initialize
 
-        vfs_read(file, buffer_to_rd, sizeof(buffer_to_rd), &pos);
-        pr_info("   Readed: %s.\n", buffer_to_rd);
+        total_bytes = vfs_write(file, buffer_to_wr, sizeof(buffer_to_wr), &pos);
+        pr_info("   Writed %ld bytes to file.\n", total_bytes);
 
         set_fs(fs);                                //<- Restore the address segment
 
