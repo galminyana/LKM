@@ -3,12 +3,11 @@
 #include <linux/fs.h>
 #include <asm/uaccess.h>
 
-static char buffer_to_wr[256] = "Hello World";            //<- buffer to print to file
-static char buffer_to_rd[256];                            //<- store what¡s readed from file
+static char buffer_to_wr[256] = "Hello World";        //<- buffer to print to file
+static char buffer_to_rd[256];                        //<- store what¡s readed from file
 
 static int __init lkm_init(void)
 {
-
         struct file * file;                           //<- file struct pointer
         mm_segment_t fs;                              //<- to save segment
         loff_t pos;
@@ -16,7 +15,7 @@ static int __init lkm_init(void)
         file = filp_open("/root/test_text.txt",       //<- file creation
                          O_RDWR|O_CREAT, 0700);
 
-        if (IS_ERR(file))                            //<- Error checking
+        if (IS_ERR(file))                             //<- Error checking
         {
                 pr_err("  Error opening file.\n");
                 return -1;
@@ -36,7 +35,7 @@ static int __init lkm_init(void)
         vfs_read(file, buffer_to_rd, sizeof(buffer_to_rd), &pos);
         pr_info("   Readed: %s.\n", buffer_to_rd);
 
-        set_fs(fs);                                  //<- Restore the address segment
+        set_fs(fs);                                //<- Restore the address segment
 
         filp_close(file, NULL);                    //<- Close the file
         pr_info("   File Closed.\n");
@@ -54,4 +53,4 @@ module_exit(lkm_exit);
 
 MODULE_AUTHOR("Guillem Alminyana");
 MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("LKM Keyb Notification Chains Example");
+MODULE_DESCRIPTION("LKM Files Access Example");
