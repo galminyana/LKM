@@ -11,6 +11,8 @@ static int __init lkm_init(void)
         struct file * file;                           //<- file struct pointer
         mm_segment_t fs;                              //<- to save segment
         loff_t pos;
+        
+        pr_info("Loading Module.\n");
 
         file = filp_open("/root/test_text.txt",       //<- file creation
                          O_RDWR|O_CREAT, 0700);
@@ -38,7 +40,7 @@ static int __init lkm_init(void)
         set_fs(fs);                                //<- Restore the address segment
 
         filp_close(file, NULL);                    //<- Close the file
-        pr_info("   File Closed.\n");
+        pr_info("   File Closed.\nModule Loaded.\n");
 
         return 0;
 }
