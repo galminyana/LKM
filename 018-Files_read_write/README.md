@@ -64,11 +64,22 @@ mm_segment_t get_fs();
 #define set_fs(x) (current_thread_info()->addr_limit = (x))
 ```
 
-
-
+### Test
+---
+`insmod` the module, and results are:
+```bash
+LKM # dmesg 
+[  596.086876] Loading Module.
+[  596.086907]    File Opened.
+[  596.087036]    Writed 12 bytes to file.
+[  596.087044]    Readed 256 bytes: Hello World.
+[  596.087045]    File Closed.
+[  609.229825] Exiting... Bye World
+LKM # 
+```
 
 ### References
 ---
 
 - [Reading and Writing of Files in Linux Kernel Driver](https://www.programmersought.com/article/83015124510/)
-
+- [Question at StackOverflow[(https://stackoverflow.com/questions/1184274/read-write-files-within-a-linux-kernel-module)
