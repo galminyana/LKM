@@ -26,7 +26,7 @@ struct netpoll {
 	u8 remote_mac[ETH_ALEN];
 };
 ```
-To know that `local_ip` and `remote_ip` have to be filled for the IP addresses. Defined as:
+To notice, that `local_ip` and `remote_ip` have to be filled for the IP addresses. Defined as:
 ```c
 union inet_addr {
 	__u32		all[4];
