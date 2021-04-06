@@ -1,47 +1,36 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include <linux/fs.h>
-#include <asm/uaccess.h>
+static struct netpoll np_t;
+static struct netpoll * np_p;
 
-static char buffer_to_wr[256] = "Hello World";        //<- buffer to print to file
-static char buffer_to_rd[256];                        //<- store what¡s readed from file
+static unsigned char buffer[] = "Sending UDP packet\n";
 
 static int __init lkm_init(void)
 {
-        struct file * file;                           //<- file struct pointer
-        mm_segment_t fs;                              //<- to save segment
-        loff_t pos;
-        long total_bytes = 0;
-
         pr_info("Loading Module.\n");
 
-        file = filp_open("/root/test_text.txt",       //<- file creation
-                         O_RDWR|O_CREAT, 0700);
+        np_t.name = "Gui";
 
-        if (IS_ERR(file))                             //<- Error checking
-        {
-                pr_err("  Error opening file.\n");
-                return -1;
-        }
-        pr_info("   File Opened.\n");
+        strlcpy(np_t.dev_name, "enp0s3", IFNAMSIZ);
 
-        fs = get_fs();                               //<- Save the current segment: KERNEL_DS or USER_DS
-        set_fs(KERNEL_DS);                           //<- Set to use kernel addresses
+        np_t.local_ip.ip = htonl(0xc0a8013d);  //<- 192.168.1.45
+        np_t.local_ip.in.s_addr = htonl(0xc0a8013d);  //<- 192.168.1.45
 
-        pos = 0;                                     //<- Initialize
+        np_t.remote_ip.ip = htonl((unsigned long int)0xc0a8012c); //192.168.1.1
+        np_t.remote_ip.in.s_addr = htonl((unsigned long int)0xc0a8012c); //192.168.1.1
 
-        total_bytes = vfs_write(file, buffer_to_wr, sizeof(buffer_to_wr), &pos);
-        pr_info("   Writed %ld bytes to file.\n", total_bytes);
+        np_t.ipv6 = 0;                    //no IPv6
 
-        pos = 0;                                    //<- Initialize
+        np_t.local_port = 6666;
+        np_t.remote_port = 514;
 
-        total_bytes = vfs_write(file, buffer_to_wr, sizeof(buffer_to_wr), &pos);
-        pr_info("   Writed %ld bytes to file.\n", total_bytes);
+        memset(np_t.remote_mac, 0xff, ETH_ALEN);
 
-        set_fs(fs);                                //<- Restore the address segment
+        //netpoll_print_options(&np_t);
+        netpoll_setup(&np_t);
+        np_p = &np_t;
 
-        filp_close(file, NULL);                    //<- Close the file
-        pr_info("   File Closed.\nModule Loaded.\n");
+        netpoll_send_udp(np_p, buffer, strlen(buffer));
 
         return 0;
 }
@@ -56,4 +45,4 @@ module_exit(lkm_exit);
 
 MODULE_AUTHOR("Guillem Alminyana");
 MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("LKM Files Access Example");
+MODULE_DESCRIPTION("LKM Netpoll Example");
