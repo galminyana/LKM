@@ -82,4 +82,4 @@ LKM #
 ---
 
 - [Reading and Writing of Files in Linux Kernel Driver](https://www.programmersought.com/article/83015124510/)
-- [Question at StackOverflow[(https://stackoverflow.com/questions/1184274/read-write-files-within-a-linux-kernel-module)
+- [Question at StackOverflow](https://stackoverflow.com/questions/1184274/read-write-files-within-a-linux-kernel-module)
