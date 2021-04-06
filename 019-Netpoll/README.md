@@ -2,7 +2,7 @@
 ---
 For Kernel > 4.17.0
 
-### `uapi/linux/in.h` -> `in_addr`
+### `uapi/linux/in.h` -> `in_addr` struct
 ---
 Represents a IP address, formated by `htons`. _Note: For `htons` the input has to be in the format 0xXXYYZZMM to represent the IP Address where XX is the hex value of 1st octet, YY for the second, and so on, example, 192.168.1.1 is 0xc0a80101_.
 
@@ -12,7 +12,7 @@ struct in_addr {
 };
 ```
 
-### linux/netpoll.h`
+### `linux/netpoll.h` -> `netpoll` struct
 ---
 The required struct, is `netpoll`:
 ```c
