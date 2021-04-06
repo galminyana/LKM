@@ -1,9 +1,11 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
+#include <linux/netpoll.h>
+
 static struct netpoll np_t;
 static struct netpoll * np_p;
 
-static unsigned char buffer[] = "Sending UDP packet\n";
+static unsigned char buffer[] = "Sending UDP packet.\n";
 
 static int __init lkm_init(void)
 {
