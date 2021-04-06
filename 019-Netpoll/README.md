@@ -11,7 +11,8 @@ struct in_addr {
 	__be32	s_addr;              //<- IP Address. 
 };
 ```
-Note: For `htons` the input has to be in the format 0xXXYYZZMM to represent the IP Address where XX is the hex value of 1st octet, YY for the second, and so on, example, 192.168.1.1 is 0xc0a80101.
+__Note_: For `htons` the input has to be in the format 0xXXYYZZMM to represent the IP Address where XX is the hex value of 1st octet, YY for the second, and so on, example, 192.168.1.1 is 0xc0a80101.
+
 ### `linux/netpoll.h` -> `netpoll` struct
 ---
 The required struct, is `netpoll`:
@@ -45,7 +46,3 @@ Where:
 - `ip`: IP address, formated by `htons` as explained in a _Note_ before.
 - `in`: A `in_addr` struct to represent a IP address
 
-
-
-### References
----
