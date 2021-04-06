@@ -26,6 +26,7 @@ struct netpoll {
 	u8 remote_mac[ETH_ALEN];
 };
 ```
+Where:
 - `local_ip, remote_ip`: To define IP addresses
 - `local_port, remote_port`: Define local and remote ports
 - `remote_mac`: MAC address to send. Usually `0xFFFFFFFFFFFF` for any
