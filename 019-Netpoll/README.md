@@ -46,3 +46,19 @@ Where:
 - `ip`: IP address, formated by `htons` as explained in a _Note_ before.
 - `in`: A `in_addr` struct to represent a IP address
 
+### Set Up Netpoll
+---
+Define and initialize a netpoll struct
+```c
+static struct netpoll* np = NULL;
+```
+Then call the required function to set the netpoll socket using
+```c
+int netpoll_setup(struct netpoll *np);
+```
+### Send the Packet
+---
+```c
+void netpoll_send_udp(struct netpoll *np, const char *msg, int len);
+```
+Where `msg` is the pointer to the message to send, and `len` the length of it.
