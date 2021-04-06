@@ -1,4 +1,4 @@
-obj-m +=  netpoll_lkm.o
+obj-m +=  files_lkm.o
 
 modules:
 	@$(MAKE) -C $(KERNEL_ROOT) M=$(shell pwd) modules
