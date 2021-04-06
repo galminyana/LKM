@@ -9,28 +9,39 @@ static int __init lkm_init(void)
 {
         pr_info("Loading Module.\n");
 
-        np_t.name = "Gui";
+        np_t.name = "MWM";
 
+        pr_info("   Set the netpoll name to the interface.\n");
         strlcpy(np_t.dev_name, "enp0s3", IFNAMSIZ);
 
-        np_t.local_ip.ip = htonl(0xc0a8013d);  //<- 192.168.1.45
-        np_t.local_ip.in.s_addr = htonl(0xc0a8013d);  //<- 192.168.1.45
+        pr_info("   Set the Local IP Address.\n");
+        np_t.local_ip.ip = htonl(0xc0a8013d);                            //<- For 192.168.1.45
+        np_t.local_ip.in.s_addr = htonl(0xc0a8013d);                     //<- 192.168.1.45
 
-        np_t.remote_ip.ip = htonl((unsigned long int)0xc0a8012c); //192.168.1.1
-        np_t.remote_ip.in.s_addr = htonl((unsigned long int)0xc0a8012c); //192.168.1.1
+        pr_info("   Set the Remote IP Address.\n");        
+        np_t.remote_ip.ip = htonl((unsigned long int)0xc0a8012c);        //<- For 192.168.1.44
+        np_t.remote_ip.in.s_addr = htonl((unsigned long int)0xc0a8012c); //<- For 192.168.1.44
 
-        np_t.ipv6 = 0;                    //no IPv6
+        pr_info("   Disable IPv6.\n");        
+        np_t.ipv6 = 0;             
 
+        pr_info("   Set the Local and Remote UDP Ports.\n");        
         np_t.local_port = 6666;
         np_t.remote_port = 514;
 
-        memset(np_t.remote_mac, 0xff, ETH_ALEN);
+        pr_info("   Set the MAC Address to broadcast.\n");        
+        memset(np_t.remote_mac, 0xff, ETH_ALEN);                       //<- 0xff bytes set ETH_ALEN times, 
+                                                                       //   means 0xffffffffffff
 
-        //netpoll_print_options(&np_t);
-        netpoll_setup(&np_t);
-        np_p = &np_t;
+        //netpoll_print_options(&np_t);                                //<- Prints bunch of debugging and info data 
+        
+        pr_info("   Set Up the netpoll struct.\n");
+        netpoll_setup(&np_t);                                          
+        
+        np_p = &np_t;                                                  //<- Make a pointer to the netpoll struct
 
-        netpoll_send_udp(np_p, buffer, strlen(buffer));
+        pr_info("   Sending the UDP packer.\n");
+        netpoll_send_udp(np_p, buffer, strlen(buffer));                //<- Send the buffer over the netpoll struct
 
         return 0;
 }
