@@ -1,4 +1,4 @@
-obj-m +=  scheduler.o
+obj-m +=  proc_lkm.o
 
 modules:
 	@$(MAKE) -C $(KERNEL_ROOT) M=$(shell pwd) modules
