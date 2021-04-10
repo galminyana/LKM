@@ -8,9 +8,9 @@ Can define a function to call on every timer interrupt.
 ### Steps
 ---
 
-1- Create a task in a `workqueue_struct` structure that will hold a pointer to the function to call
-2- Use the function `queue_Delayed_work()` to put this task in the tasks list
-3- Once called, have to put the task back again on the queue to be called again
+1) Create a task in a `workqueue_struct` structure that will hold a pointer to the function to call
+2) Use the function `queue_Delayed_work()` to put this task in the tasks list
+3) Once called, have to put the task back again on the queue to be called again
 
 Once the module has to be unloaded, must take care to remove the function from the task list and wait until next execution
 
