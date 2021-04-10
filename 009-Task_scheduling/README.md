@@ -14,7 +14,7 @@ Can define a function to call on every timer interrupt.
 
 Once the module has to be unloaded, must take care to remove the function from the task list and wait until next execution
 
-### `workqueue.c` -> workqueue_Struct`
+### `workqueue.c` -> `workqueue_struct`
 ---
 Where to create the task list
 
