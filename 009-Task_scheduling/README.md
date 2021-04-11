@@ -59,9 +59,11 @@ struct work_struct {
 4) On module unload, cancel the work, flush, and destroy the Work Queue
 
 #### `create_workqueue`
-
+```c 
+#define create_workqueue(name)						\
+	alloc_workqueue("%s", __WQ_LEGACY | WQ_MEM_RECLAIM, 1, (name))
+```
 #### `queue_delayed_work`
-
 ```c
 /**
  * queue_delayed_work - queue work on a workqueue after delay
@@ -74,11 +76,21 @@ struct work_struct {
 static inline bool queue_delayed_work(struct workqueue_struct *wq,
 				      struct delayed_work *dwork,
 				      unsigned long delay)
-```	
-
+```
 #### `cancel_delayed_work`
-
+```c
+extern bool cancel_delayed_work(struct delayed_work *dwork);
+```
 #### `flush_delayed_work`
-
+```c
+extern bool flush_delayed_work(struct delayed_work *dwork);
+```
 #### `destroy_workqueue`
+```c
+extern void destroy_workqueue(struct workqueue_struct *wq);
+```
 
+### References
+---
+- [The Linux Kernel Module Programming Guide Cap. 11](https://www.linuxtopia.org/online_books/Linux_Kernel_Module_Programming_Guide/x1191.html)
+- [Kernel Source](https://elixir.bootlin.com/linux/v5.12-rc6/source/include/linux/workqueue.h)
