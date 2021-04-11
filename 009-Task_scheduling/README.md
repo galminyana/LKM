@@ -53,21 +53,32 @@ struct work_struct {
 
 ### Schedule Tasks
 ---
+1) Create a Work Queue
+2) Queue the task in the Work Queue
+3) When task run, remember to Queue it again if want to execute again
+4) On module unload, cancel the work, flush, and destroy the Work Queue
+
+#### `create_workqueue`
+
+#### `queue_delayed_work`
+
 ```c
 /**
- * schedule_work - put work task in global workqueue
- * @work: job to be done
+ * queue_delayed_work - queue work on a workqueue after delay
+ * @wq: workqueue to use
+ * @dwork: delayable work to queue
+ * @delay: number of jiffies to wait before queueing
  *
- * Returns %false if @work was already on the kernel-global workqueue and
- * %true otherwise.
- *
- * This puts a job in the kernel-global workqueue if it was not already
- * queued and leaves it in the same position on the kernel-global
- * workqueue otherwise.
- *
- * Shares the same memory-ordering properties of queue_work(), cf. the
- * DocBook header of queue_work().
+ * Equivalent to queue_delayed_work_on() but tries to use the local CPU.
  */
-static inline bool schedule_work(struct work_struct *work);
-```
-Returns "0" if the `work` is already on the Kernel Work Queue and non-zero otherwise. 
+static inline bool queue_delayed_work(struct workqueue_struct *wq,
+				      struct delayed_work *dwork,
+				      unsigned long delay)
+```	
+
+#### `cancel_delayed_work`
+
+#### `flush_delayed_work`
+
+#### `destroy_workqueue`
+
