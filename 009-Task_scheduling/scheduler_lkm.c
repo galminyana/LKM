@@ -1,26 +1,27 @@
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/module.h>
-#include <linux/workqueue.h>	
-#include <linux/sched.h>	
+#include <linux/workqueue.h>
+#include <linux/sched.h>
+#include <linux/interrupt.h>
 
-static int times_task_executed = 0;      //<- To hold hoy many times task been executed
+static int times_task_executed = 0;                          //<- To hold hoy many times task been executed
 
-static void scheduled_task (void *);     //<- Function prototipe definition
-
+static void scheduled_task (struct work_struct * work);     //<- Function prototipe definition
 
 static struct workqueue_struct * my_workqueue;
 static struct work_struct my_task;
-static DECLARE_WORK(my_task, scheduled_task);  //<- Declare and assign the function to the task
 
+static DECLARE_WORK(my_task, scheduled_task);               //<- Declare and assign the function to the task
 
-static void scheduled_task (void * parameter)
+static void scheduled_task (struct work_struct * work)
 {
-	pr_info("   Executed task %d times.\n", times_task_executed);
-	
-	times_task_executed++;
-	
+        pr_info("   Executed task %d times.\n", times_task_executed);
+
+        times_task_executed++;
+
 }
+
 static int __init lkm_init (void)
 {
 
