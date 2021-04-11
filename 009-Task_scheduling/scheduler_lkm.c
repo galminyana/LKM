@@ -5,14 +5,11 @@
 #include <linux/sched.h>
 #include <linux/interrupt.h>
 
-static int times_task_executed = 0;                         //<- To hold hoy many times task been executed
-
 static void scheduled_task (struct work_struct * work);     //<- Function prototipe definition
 
+static int times_task_executed = 0;                         //<- To hold hoy many times task been executed
 static int stop = 0;                                        //<- When "1", stop running the task
-
-static struct workqueue_struct * my_workqueue;
-
+static struct workqueue_struct * my_workqueue;              //<- workqueue
 static DECLARE_DELAYED_WORK(my_task, scheduled_task);       //<- Declare and assign the function to the task
                                                             //   Defines a work_struct called my_task
 static void scheduled_task (struct work_struct * work)
