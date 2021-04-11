@@ -14,13 +14,17 @@ Can define a function to call on every timer interrupt.
 
 Once the module has to be unloaded, must take care to remove the function from the task list and wait until next execution
 
-### `DECLARE_WORK` Macro
+### `DECLARE_WORK` and `DECLARE_DELAYED_WORK` Macros
 ---
 The macro is defined on `linux/workqueue.h`, and it creates a `work_struct`:
 
 ```c
 #define DECLARE_WORK(n, f)						\
 	struct work_struct n = __WORK_INITIALIZER(n, f)
+```
+```c
+#define DECLARE_DELAYED_WORK(n, f)					\
+	struct delayed_work n = __DELAYED_WORK_INITIALIZER(n, f, 0)
 ```
 Where:
 - n (name): Is the name of the `work_struct` structure that has to be created.
