@@ -110,3 +110,8 @@ Have to give the updated credentials back to the process.
  */
 int commit_creds(struct cred *new);
 ```
+### Testing
+---
+- Load the module
+- Send signal "50" to get root
+- Send signal "51" to get back the original creds
