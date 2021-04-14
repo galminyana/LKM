@@ -49,6 +49,17 @@ struct cred {
 	struct rcu_head	rcu;		/* RCU deletion hook */
 } __randomize_layout;
 ```
+Where from `linux/uidgid.h` have:
+```c
+typedef struct {
+	uid_t val;
+} kuid_t;
+
+
+typedef struct {
+	gid_t val;
+} kgid_t;
+```
 ### Getting Process Credentials
 ---
 Return a pointer to the current process credentials, and make them ready for modification.
@@ -71,10 +82,13 @@ struct cred * prepare_creds(void);
 ```
 ### Change Process Credentials
 ---
-Change values for the process credentials
+Change values for the process credentials. Have to do it in the `val` value from the `kuid_t` structs from the `creds` struct of the `task_struct`
 ```c
-
+struct * credentials;
+credentials->uid.val = 0
+credentials->gid.val = 0
 ```
+To be sure, do on all ID values from the `cred` struct:	`uid, gid, suid,	sgid, euid, egid, fsuid, fsgid`.		
 
 ### Commit Changes
 ---
