@@ -80,7 +80,7 @@ unsigned long (*read_cr0)(void);
 ## New Hooking Method from Kernel 5.X
 ---
 Using kprobes, can get the address of kernel symbols. Is as easy as:
-```c`
+```c
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
