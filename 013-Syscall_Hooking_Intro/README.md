@@ -1,6 +1,6 @@
 ## Syscall Hooking: Introduction
 ---
-For Kernel > 4.17.0
+For Kernel > 4.17.0. **NEW** As from any Kernel version in the 5.X branch, the `kallsyms_lookup_name` function is not exported anymore and using it will give compilation errors. A new way has to be used, explained at the end of this page, and added a new file code as example.
 
 All syscalls are definet in `linux/syscalls.h`.
 
@@ -77,3 +77,34 @@ For using, need to define a global `unsigned long` for the `cr0` value and read 
 ```c
 unsigned long (*read_cr0)(void);
 ```
+## New Hooking Method from Kernel 5.X
+---
+Using kprobes, can get the address of kernel symbols. Is as easy as:
+```c`
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/kprobes.h>
+
+static struct kprobe kp = {
+    .symbol_name = "sys_call_table"
+};
+
+int __init lkm_init(void) {
+    register_kprobe(&kp);
+
+    pr_info("Syscall Table at 0x%px \n", kp.addr);
+
+    unregister_kprobe(&kp);
+    
+	return 0;
+}
+
+void __exit lkm_exit(void) {
+    
+}
+
+module_init(lkm_init);
+module_exit(lkm_exit);
+```
+The struct `kprobe` has a field, `.addr` that stores the address of the symbol of the struct. This symbol, is defined on the `symbol_name` field from the struct. `register_kprobe` fills the `.addr` field.
